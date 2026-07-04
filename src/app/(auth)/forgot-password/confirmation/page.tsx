@@ -26,7 +26,7 @@ export default function confirmation() {
           <ArrowRight size={18} aria-hidden="false" />
         </ButtonLink>
         <CardDescription className="text-center text-xs font-medium">
-          Didn't you receive an email?
+          Didn&apos;t you receive an email?
         </CardDescription>
         <CardDescription className="text-center text-xs font-medium">
           Check your spam or
