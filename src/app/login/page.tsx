@@ -13,23 +13,13 @@ import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import { togglePassword } from "@/lib/utils";
 
 export default function Login() {
-  const [inputType, setInputType] = useState<string>("password");
-  const [isTogglePassword, setIsTogglePassword] = useState<boolean>(false);
-
-  function togglePassword() {
-    if (inputType === "password") {
-      setInputType("text");
-      setIsTogglePassword(!isTogglePassword);
-    } else {
-      setInputType("password");
-      setIsTogglePassword(!isTogglePassword);
-    }
-  }
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="mt-5 flex flex-col sm:items-center">
+    <div className="sm:max-w-2xl lg:max-w-xl mx-auto mt-5">
       <div className="text-center">
         <h1 className="text-primary text-xl sm:text-3xl">MANARAH</h1>
         <p className="text-secondary text-sm font-semibold">LEARN • TEACH • COMPETE</p>
@@ -58,20 +48,25 @@ export default function Login() {
             <label htmlFor="password" className="my-3 block relative">
               <Input
                 className="text-muted text-sm font-medium font-mono caret-primary"
-                type={inputType}
+                type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 id="password"
                 name="password"
               />
-              {!isTogglePassword ? (
+              {!showPassword && (
                 <Eye
-                  onClick={togglePassword}
+                  aria-hidden={true}
+                  aria-label="Show password"
+                  onClick={() => togglePassword(setShowPassword)}
                   size={16}
                   className="absolute top-4 right-2 hover:cursor-pointer hover:text-primary"
                 />
-              ) : (
+              )}
+              {showPassword && (
                 <EyeOff
-                  onClick={togglePassword}
+                  aria-hidden={true}
+                  aria-label="hide password"
+                  onClick={() => togglePassword(setShowPassword)}
                   size={16}
                   className="absolute top-4 right-2 hover:cursor-pointer hover:text-primary"
                 />
@@ -114,7 +109,7 @@ export default function Login() {
           <div className="flex justify-center items-center text-base">
             <p>Don&apos;t have an account?</p>
             <ButtonLink
-              href=""
+              href="/register"
               className="bg-transparent text-primary hover:bg-transparent hover:underline pl-2"
             >
               Create Account
