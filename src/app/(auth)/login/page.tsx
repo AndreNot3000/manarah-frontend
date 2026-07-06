@@ -15,8 +15,26 @@ import Image from "next/image";
 import { useState } from "react";
 import { togglePassword } from "@/lib/utils";
 
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { loginSchema, LoginFormData } from "@/lib/validations/auth";
+import clsx from "clsx";
+
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  function onSubmit(data: LoginFormData) {
+    console.log(data);
+  }
 
   return (
     <div className="sm:max-w-2xl lg:max-w-xl mx-auto mt-5">
@@ -35,20 +53,27 @@ export default function Login() {
               Access your learning portal
             </CardDescription>
           </CardHeader>
-          <form className="my-5">
+          <form onSubmit={handleSubmit(onSubmit)} className="my-5">
             <label htmlFor="email" className="my-3 block">
               <Input
-                className="text-muted text-sm font-medium font-mono caret-primary"
-                type="text"
+                className={clsx("text-muted border-2 text-sm font-medium font-mono caret-primary", {
+                  "focus-visible:ring-0 border-red-500": errors.email,
+                })}
+                type="email"
+                {...register("email")}
                 placeholder="Email Address"
                 id="email"
                 name="email"
               />
+              {errors.email && <p className="text-red-500 text-xs my-2">{errors.email.message}</p>}
             </label>
             <label htmlFor="password" className="my-3 block relative">
               <Input
-                className="text-muted text-sm font-medium font-mono caret-primary"
+                className={clsx("text-muted border-2 text-sm font-medium font-mono caret-primary", {
+                  "focus-visible:ring-0 border-red-500": errors.password,
+                })}
                 type={showPassword ? "text" : "password"}
+                {...register("password")}
                 placeholder="Password"
                 id="password"
                 name="password"
@@ -71,13 +96,21 @@ export default function Login() {
                   className="absolute top-4 right-2 hover:cursor-pointer hover:text-primary"
                 />
               )}
+              {errors.password && (
+                <p className="text-red-600 text-xs my-2">{errors.password.message}</p>
+              )}
             </label>
             <div className="my-5 flex justify-between">
               <label
                 htmlFor="remember-me"
                 className="flex items-center justify-between text-text font-medium text-xs hover:cursor-pointer hover:text-primary"
               >
-                <Input id="remember-me" type="checkbox" className="mr-2 h-4  w-4" />
+                <Input
+                  id="remember-me"
+                  {...register("rememberMe")}
+                  type="checkbox"
+                  className="mr-2 h-4  w-4"
+                />
                 Remember me
               </label>
               <Link
