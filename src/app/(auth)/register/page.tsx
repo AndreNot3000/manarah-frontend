@@ -206,12 +206,7 @@ export default function Register() {
           </label>
 
           {selectedRole === "tutor" && <SelectExpertise register={register} errors={errors} />}
-          <ButtonLink
-            href="/student-dashboard"
-            className="w-full text-white my-3 text-sm font-semibold"
-          >
-            Register Now
-          </ButtonLink>
+          <Button className="w-full text-white my-3 text-sm font-semibold">Register Now</Button>
           <p className="flex items-center justify-center text-sm sm:text-base">
             Already have an account?
             <ButtonLink className="h-0 w-auto px-1 text-primary hover:underline" href="/login">
