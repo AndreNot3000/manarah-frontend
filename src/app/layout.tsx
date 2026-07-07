@@ -16,6 +16,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "MANARAH",
   description: "Learn · Teach · Compete — Islamic learning and competition platform",
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/assets/images/icon.png",
+  },
 };
 
 export default function RootLayout({
