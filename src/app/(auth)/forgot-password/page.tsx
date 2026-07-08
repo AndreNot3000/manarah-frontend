@@ -9,17 +9,32 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { forgotPasswordSchema, ForgotPasswordFormData } from "@/lib/validations/auth";
 import clsx from "clsx";
 
+import { useRouter } from "next/navigation";
+import { forgotPassword } from "@/lib/api";
+
 export default function ForgotPassword() {
+  const router = useRouter();
+  
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    setError,
+    formState: { errors, isSubmitting },
   } = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
   });
 
-  function onSubmit(data: ForgotPasswordFormData) {
-    console.log(data);
+  async function onSubmit(data: ForgotPasswordFormData) {
+    try {
+      await forgotPassword(data.email);
+      router.push("/forgot-password/confirmation");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Something went wrong. Please try again.";
+      setError("email", {
+        type: "manual",
+        message,
+      });
+    }
   }
   return (
     <section className="sm:max-w-2xl lg:max-w-xl mx-auto mt-8">
@@ -29,7 +44,7 @@ export default function ForgotPassword() {
       <Card className="my-5 lg:max-w-2xl">
         <CardHeader className="text-[1.75rem] font-bold">Forgot Password?</CardHeader>
         <CardDescription className="text-base sm:text-[1.125rem]">
-          Enter the email address associated with your account and we'll send you a password reset
+          Enter the email address associated with your account and we&apos;ll send you a password reset
           link.
         </CardDescription>
         <form onSubmit={handleSubmit(onSubmit)} className="my-5">
@@ -41,16 +56,16 @@ export default function ForgotPassword() {
               id="email"
               type="email"
               placeholder="Email Address"
-              name="email"
               {...register("email")}
             />
             {errors.email && <p className="text-red-500 text-xs my-2">{errors.email.message}</p>}
           </label>
           <Button
-            // href="/forgot-password/confirmation"
-            className="w-full h-14 my-3 text-white text-sm font-semibold"
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full h-14 my-3 text-white text-sm font-semibold flex items-center justify-center"
           >
-            Send Reset Link
+            {isSubmitting ? "Sending Reset Link..." : "Send Reset Link"}
           </Button>
         </form>
         <ButtonLink

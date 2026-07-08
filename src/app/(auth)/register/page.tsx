@@ -8,12 +8,17 @@ import { useState } from "react";
 import { IoShieldCheckmark } from "react-icons/io5";
 import { FaGlobeAfrica } from "react-icons/fa";
 
-import { useForm } from "react-hook-form";
+import { useForm, UseFormRegister, FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { registerSchema, RegisterFormData } from "@/lib/validations/auth";
 
-function SelectExpertise({ register, errors }) {
+interface SelectExpertiseProps {
+  register: UseFormRegister<RegisterFormData>;
+  errors: FieldErrors<RegisterFormData>;
+}
+
+function SelectExpertise({ register, errors }: SelectExpertiseProps) {
   return (
     <fieldset className="my-3">
       <legend className="text-primary font-semibold">Select Expertise</legend>
@@ -24,7 +29,6 @@ function SelectExpertise({ register, errors }) {
             id="quran"
             {...register("expertise")}
             type="checkbox"
-            name="expertise"
             value="Quran"
           />
           Quran
@@ -35,7 +39,6 @@ function SelectExpertise({ register, errors }) {
             {...register("expertise")}
             id="tajweed"
             type="checkbox"
-            name="expertise"
             value="Tajweed"
           />
           Tajweed
@@ -46,7 +49,6 @@ function SelectExpertise({ register, errors }) {
             {...register("expertise")}
             id="arabic"
             type="checkbox"
-            name="expertise"
             value="Arabic"
           />
           Arabic
@@ -57,8 +59,7 @@ function SelectExpertise({ register, errors }) {
             {...register("expertise")}
             id="hifiz"
             type="checkbox"
-            name="expertise"
-            Value="Hifiz"
+            value="Hifiz"
           />
           Hifiz
         </label>
@@ -68,7 +69,11 @@ function SelectExpertise({ register, errors }) {
   );
 }
 
+import { useRouter } from "next/navigation";
+import { registerStudent, registerTutor } from "@/lib/api";
+
 export default function Register() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [selectedRole, setSelectedRole] = useState<"student" | "tutor">("student");
   const [isTutor, setIsTutor] = useState<boolean>(false);
@@ -77,7 +82,8 @@ export default function Register() {
     register,
     handleSubmit,
     setValue,
-    formState: { errors },
+    setError,
+    formState: { errors, isSubmitting },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     shouldUnregister: false,
@@ -88,8 +94,54 @@ export default function Register() {
     },
   });
 
-  function onSubmit(data: RegisterFormData) {
-    console.log(data);
+  async function onSubmit(data: RegisterFormData) {
+    try {
+      let result;
+      if (data.role === "student") {
+        result = await registerStudent({
+          email: data.email,
+          password: data.password,
+          name: data.fullName,
+          phone: data.phone || undefined,
+        });
+      } else {
+        result = await registerTutor({
+          email: data.email,
+          password: data.password,
+          name: data.fullName,
+        });
+      }
+
+      // Store JWT token and user info in localStorage & cookies
+      localStorage.setItem("token", result.token);
+      localStorage.setItem("user", JSON.stringify(result.user));
+      document.cookie = `token=${result.token}; path=/; max-age=604800; SameSite=Lax`;
+      document.cookie = `user=${encodeURIComponent(JSON.stringify(result.user))}; path=/; max-age=604800; SameSite=Lax`;
+
+      // Trigger a storage event so that header/components update in real-time
+      window.dispatchEvent(new Event("storage"));
+
+      // Redirect
+      if (result.user.role === "STUDENT") {
+        router.push("/student-dashboard");
+      } else {
+        router.push("/tutor-dashboard");
+      }
+    } catch (err) {
+      const code = err && typeof err === "object" && "code" in err ? (err as { code?: string }).code : null;
+      const message = err instanceof Error ? err.message : "Registration failed. Please try again.";
+      if (code === "EMAIL_EXISTS") {
+        setError("email", {
+          type: "manual",
+          message,
+        });
+      } else {
+        setError("fullName", {
+          type: "manual",
+          message,
+        });
+      }
+    }
   }
 
   function toggleRole(e: React.MouseEvent<HTMLButtonElement>) {
@@ -206,7 +258,23 @@ export default function Register() {
           </label>
 
           {selectedRole === "tutor" && <SelectExpertise register={register} errors={errors} />}
-          <Button className="w-full text-white my-3 text-sm font-semibold">Register Now</Button>
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full text-white my-3 text-sm font-semibold flex items-center justify-center"
+          >
+            {isSubmitting ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                <span>Creating Account...</span>
+              </>
+            ) : (
+              "Register Now"
+            )}
+          </Button>
           <p className="flex items-center justify-center text-sm sm:text-base">
             Already have an account?
             <ButtonLink className="h-0 w-auto px-1 text-primary hover:underline" href="/login">
