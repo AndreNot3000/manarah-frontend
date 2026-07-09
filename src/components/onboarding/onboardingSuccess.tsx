@@ -1,5 +1,5 @@
 import { ButtonLink, Card, CardContent, CardDescription, CardTitle } from "@/components/ui";
-import { ArrowRight, CircleCheck, UserRoundPen } from "lucide-react";
+import { ArrowRight, CircleCheck } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 import { IconType } from "react-icons";
 
@@ -21,7 +21,6 @@ type OnboardingItemPropType = {
 
 export default function OnboardingSuccess({
   name,
-  role,
   heading,
   description,
   checklist,

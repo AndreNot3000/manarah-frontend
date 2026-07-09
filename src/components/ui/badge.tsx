@@ -2,9 +2,9 @@ import { HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 const variants = {
-  default: "bg-neutral-background text-neutral-text",
-  primary: "bg-primary-light text-primary-dark",
-  secondary: "bg-secondary-light text-secondary-dark",
+  default: "bg-neutral-background dark:bg-slate-800 text-neutral-text dark:text-slate-200",
+  primary: "bg-primary-light dark:bg-emerald-950/40 text-primary-dark dark:text-emerald-400",
+  secondary: "bg-secondary-light dark:bg-amber-950/40 text-secondary-dark dark:text-amber-400",
   verified: "bg-primary text-primary-foreground",
   premium: "bg-secondary text-secondary-foreground",
 } as const;

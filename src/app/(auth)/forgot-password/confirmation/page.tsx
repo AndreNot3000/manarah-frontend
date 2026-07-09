@@ -15,7 +15,7 @@ export default function confirmation() {
         </div>
         <CardHeader className="text-2xl text-center font-semibold">Check your email</CardHeader>
         <CardDescription className="text-base text-center">
-          We've sent a password reset link to your email address. Please check your inbox and follow
+          We&apos;ve sent a password reset link to your email address. Please check your inbox and follow
           the instructions to reset your password.
         </CardDescription>
         <ButtonLink

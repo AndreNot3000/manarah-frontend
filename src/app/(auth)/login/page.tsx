@@ -12,7 +12,7 @@ import {
 import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { togglePassword } from "@/lib/utils";
 
 import { useForm } from "react-hook-form";
@@ -21,19 +21,61 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, LoginFormData } from "@/lib/validations/auth";
 import clsx from "clsx";
 
-export default function Login() {
+import { useRouter, useSearchParams } from "next/navigation";
+import { loginUser } from "@/lib/api";
+
+function LoginFormContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    setError,
+    formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   });
 
-  function onSubmit(data: LoginFormData) {
-    console.log(data);
+  useEffect(() => {
+    if (searchParams.get("reset") === "success") {
+      setSuccessMessage("Your password has been reset successfully. Please log in with your new password.");
+    }
+  }, [searchParams]);
+
+  async function onSubmit(data: LoginFormData) {
+    try {
+      const result = await loginUser({
+        email: data.email,
+        password: data.password,
+      });
+
+      // Store JWT token and user info in localStorage & cookies
+      localStorage.setItem("token", result.token);
+      localStorage.setItem("user", JSON.stringify(result.user));
+      document.cookie = `token=${result.token}; path=/; max-age=604800; SameSite=Lax`;
+      document.cookie = `user=${encodeURIComponent(JSON.stringify(result.user))}; path=/; max-age=604800; SameSite=Lax`;
+
+      // Trigger a storage event so that header/components update in real-time
+      window.dispatchEvent(new Event("storage"));
+
+      // Role-based redirect
+      if (result.user.role === "ADMIN") {
+        router.push("/admin-dashboard");
+      } else if (result.user.role === "TUTOR") {
+        router.push("/tutor-dashboard");
+      } else {
+        router.push("/student-dashboard");
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to connect to the server. Please try again.";
+      setError("email", {
+        type: "manual",
+        message,
+      });
+    }
   }
 
   return (
@@ -44,6 +86,12 @@ export default function Login() {
       </div>
 
       <section className="my-5">
+        {successMessage && (
+          <div className="bg-green-50 text-green-800 p-4 rounded-lg text-sm my-3 font-semibold text-center border border-green-200">
+            {successMessage}
+          </div>
+        )}
+
         <Card>
           <CardHeader>
             <CardTitle className="text-text text-xl font-semibold sm:text-2xl">
@@ -63,7 +111,6 @@ export default function Login() {
                 {...register("email")}
                 placeholder="Email Address"
                 id="email"
-                name="email"
               />
               {errors.email && <p className="text-red-500 text-xs my-2">{errors.email.message}</p>}
             </label>
@@ -76,7 +123,6 @@ export default function Login() {
                 {...register("password")}
                 placeholder="Password"
                 id="password"
-                name="password"
               />
               {!showPassword && (
                 <Eye
@@ -121,11 +167,25 @@ export default function Login() {
               </Link>
             </div>
             <Button
-              className="text-white w-full font-semibold text-xs flex items-center gap-1.5 sm:text-sm"
+              type="submit"
+              disabled={isSubmitting}
+              className="text-white w-full font-semibold text-xs flex items-center justify-center gap-1.5 sm:text-sm"
               size="md"
             >
-              Sign in to portal
-              <ArrowRight size={18} aria-label="hidden" />
+              {isSubmitting ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  <span>Signing in to portal...</span>
+                </>
+              ) : (
+                <>
+                  <span>Sign in to portal</span>
+                  <ArrowRight size={18} aria-label="hidden" />
+                </>
+              )}
             </Button>
             <div className="my-9 flex items-center justify-center gap-3">
               <span className="w-[20%] h-0.5 bg-gray-300 block"></span>
@@ -167,5 +227,13 @@ export default function Login() {
         </div>
       </section>
     </div>
+  );
+}
+
+export default function Login() {
+  return (
+    <Suspense fallback={<div className="text-center py-10 font-semibold">Loading...</div>}>
+      <LoginFormContent />
+    </Suspense>
   );
 }
