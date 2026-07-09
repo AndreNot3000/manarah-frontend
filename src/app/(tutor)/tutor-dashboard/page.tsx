@@ -21,9 +21,20 @@ export default function TutorDashboard() {
 
   if (isProfileLoading || isInquiriesLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[300px]">
-        <div className="text-center font-semibold text-primary animate-pulse text-lg">
-          Loading portal...
+      <div className="w-full min-h-[50vh] flex flex-col items-center justify-center py-20 animate-fade-in">
+        <div className="flex flex-col items-center space-y-6">
+          <div className="relative flex items-center justify-center h-20 w-20">
+            <div className="absolute inset-0 rounded-full border-4 border-slate-100 border-t-emerald-600 animate-spin" />
+            <div className="absolute h-14 w-14 rounded-full border-4 border-slate-100 border-b-emerald-400 animate-spin-reverse" />
+            <div className="absolute h-8 w-8 rounded-full bg-emerald-50 flex items-center justify-center shadow-sm">
+              <span className="text-emerald-700 font-extrabold text-xs">M</span>
+            </div>
+          </div>
+          <div className="text-center space-y-1.5">
+            <h3 className="text-slate-800 font-semibold text-base font-outfit tracking-wide animate-pulse">
+              Loading dashboard...
+            </h3>
+          </div>
         </div>
       </div>
     );

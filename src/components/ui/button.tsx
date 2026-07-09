@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 export const buttonVariants = {
   primary: "bg-primary text-primary-foreground hover:bg-primary-dark",
   secondary: "bg-secondary text-secondary-foreground hover:bg-secondary-dark",
-  outline: "border-2 border-primary text-primary hover:bg-primary-light",
-  ghost: "text-primary hover:bg-primary-light",
+  outline: "border-2 border-primary text-primary dark:text-emerald-400 hover:bg-primary-light dark:hover:bg-emerald-950/30",
+  ghost: "text-primary dark:text-emerald-400 hover:bg-primary-light dark:hover:bg-emerald-950/20",
 } as const;
 
 export const buttonSizes = {

@@ -77,6 +77,8 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [selectedRole, setSelectedRole] = useState<"student" | "tutor">("student");
   const [isTutor, setIsTutor] = useState<boolean>(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [registeredName, setRegisteredName] = useState("");
 
   const {
     register,
@@ -96,37 +98,23 @@ export default function Register() {
 
   async function onSubmit(data: RegisterFormData) {
     try {
-      let result;
       if (data.role === "student") {
-        result = await registerStudent({
+        await registerStudent({
           email: data.email,
           password: data.password,
           name: data.fullName,
           phone: data.phone || undefined,
         });
       } else {
-        result = await registerTutor({
+        await registerTutor({
           email: data.email,
           password: data.password,
           name: data.fullName,
         });
       }
 
-      // Store JWT token and user info in localStorage & cookies
-      localStorage.setItem("token", result.token);
-      localStorage.setItem("user", JSON.stringify(result.user));
-      document.cookie = `token=${result.token}; path=/; max-age=604800; SameSite=Lax`;
-      document.cookie = `user=${encodeURIComponent(JSON.stringify(result.user))}; path=/; max-age=604800; SameSite=Lax`;
-
-      // Trigger a storage event so that header/components update in real-time
-      window.dispatchEvent(new Event("storage"));
-
-      // Redirect
-      if (result.user.role === "STUDENT") {
-        router.push("/student-dashboard");
-      } else {
-        router.push("/tutor-dashboard");
-      }
+      setRegisteredName(data.fullName);
+      setIsSuccess(true);
     } catch (err) {
       const code = err && typeof err === "object" && "code" in err ? (err as { code?: string }).code : null;
       const message = err instanceof Error ? err.message : "Registration failed. Please try again.";
@@ -155,6 +143,38 @@ export default function Register() {
       setValue("role", "student");
       setValue("expertise", []);
     }
+  }
+
+  if (isSuccess) {
+    return (
+      <section className="sm:max-w-2xl lg:max-w-xl mx-auto mt-10">
+        <Card className="text-center p-8 space-y-6">
+          <div className="flex justify-center">
+            <div className="h-20 w-20 rounded-full bg-green-50 dark:bg-emerald-950/40 border border-green-200 dark:border-emerald-900/50 flex items-center justify-center text-primary dark:text-emerald-400 shadow-md">
+              <IoShieldCheckmark size={40} className="animate-bounce" />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <h2 className="text-2xl font-black text-slate-800 dark:text-slate-100">
+              Account Created!
+            </h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
+              Salaam, <span className="font-bold text-primary dark:text-emerald-400">{registeredName}</span>. Your account was created successfully! Please log in to complete your setup.
+            </p>
+          </div>
+
+          <div className="pt-4">
+            <Button
+              onClick={() => router.push("/login")}
+              className="w-full h-12 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl shadow-md transition-all"
+            >
+              Proceed to Login
+            </Button>
+          </div>
+        </Card>
+      </section>
+    );
   }
 
   return (

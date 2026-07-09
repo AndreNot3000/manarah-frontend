@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Button, ButtonLink } from "@/components/ui";
+import { Button, ButtonLink, ThemeToggle } from "@/components/ui";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -54,7 +54,7 @@ export function Header() {
   const dashboardUrl = user?.role === "STUDENT" ? "/student-dashboard" : "/";
 
   return (
-    <header className="sticky top-0 z-40 border-b border-neutral-border bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-neutral-border bg-white/95 backdrop-blur dark:bg-slate-950/95 dark:border-slate-800">
       <div className="container-app flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
@@ -68,7 +68,7 @@ export function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-body font-medium text-neutral-text transition-colors hover:text-primary"
+              className="text-body font-medium text-neutral-text dark:text-slate-200 transition-colors hover:text-primary dark:hover:text-emerald-400"
             >
               {link.label}
             </Link>
@@ -95,17 +95,21 @@ export function Header() {
               </ButtonLink>
             </>
           )}
+          <ThemeToggle />
         </div>
 
-        {user ? (
-          <Button onClick={handleLogout} variant="outline" size="sm" className="md:hidden">
-            Log out
-          </Button>
-        ) : (
-          <ButtonLink href="/login" variant="outline" size="sm" className="md:hidden">
-            Log in
-          </ButtonLink>
-        )}
+        <div className="flex items-center gap-2 md:hidden">
+          {user ? (
+            <Button onClick={handleLogout} variant="outline" size="sm">
+              Log out
+            </Button>
+          ) : (
+            <ButtonLink href="/login" variant="outline" size="sm">
+              Log in
+            </ButtonLink>
+          )}
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   );
