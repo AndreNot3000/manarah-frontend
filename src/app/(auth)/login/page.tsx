@@ -29,11 +29,11 @@ function LoginFormContent() {
   const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -47,6 +47,7 @@ function LoginFormContent() {
 
   async function onSubmit(data: LoginFormData) {
     try {
+      setLoginError(null);
       const result = await loginUser({
         email: data.email,
         password: data.password,
@@ -71,10 +72,7 @@ function LoginFormContent() {
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to connect to the server. Please try again.";
-      setError("email", {
-        type: "manual",
-        message,
-      });
+      setLoginError(message);
     }
   }
 
@@ -101,6 +99,16 @@ function LoginFormContent() {
               Access your learning portal
             </CardDescription>
           </CardHeader>
+
+          {loginError && (
+            <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/40 text-red-700 dark:text-red-400 p-4 rounded-xl text-sm font-semibold text-center animate-fade-in flex items-center justify-center gap-2 my-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-ping shrink-0" />
+              {loginError === "Unauthorized" || loginError.includes("401") || loginError.toLowerCase().includes("credentials") || loginError.toLowerCase().includes("invalid")
+                ? "Invalid email or password. Please try again."
+                : loginError}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit(onSubmit)} className="my-5">
             <label htmlFor="email" className="my-3 block">
               <Input
