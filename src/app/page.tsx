@@ -15,12 +15,12 @@ export default function Home() {
   return (
     <div className="space-y-section">
       {/* Hero */}
-      <section className="rounded-card bg-gradient-to-br from-primary-light to-white p-6 md:p-10">
+      <section className="rounded-card bg-gradient-to-br from-[#eaf6f0] to-white dark:from-[#061810] dark:to-[#0b0f17] border border-slate-100 dark:border-emerald-900/20 p-6 md:p-10 shadow-card">
         <Badge variant="secondary" className="mb-4">
           Islamic Learning Platform
         </Badge>
-        <h1 className="max-w-xl">Learn · Teach · Compete</h1>
-        <p className="mt-3 max-w-lg text-body text-neutral-muted">
+        <h1 className="max-w-xl text-slate-900 dark:text-slate-100">Learn · Teach · Compete</h1>
+        <p className="mt-3 max-w-lg text-body text-neutral-muted dark:text-slate-300">
           Connect with qualified tutors, join Islamic competitions, and grow your knowledge — all in
           one place.
         </p>
@@ -45,7 +45,7 @@ export default function Home() {
             <CardDescription>Find tutors for Quran, Tajweed, Hifz, and more.</CardDescription>
           </CardHeader>
           <CardContent>
-            <label className="mb-1.5 block text-caption font-medium text-neutral-text">
+            <label className="mb-1.5 block text-caption font-medium text-neutral-text dark:text-slate-300">
               Search tutors
             </label>
             <Input placeholder="e.g. Tajweed, Arabic..." />
