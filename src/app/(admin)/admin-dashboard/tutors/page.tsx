@@ -6,6 +6,8 @@ import { getAdminUsers, verifyTutor, getTutor } from "@/lib/api";
 import { Card, CardTitle, CardDescription, Button, Badge } from "@/components/ui";
 import { UserCheck, AlertCircle, FileText, ChevronLeft, ChevronRight, CheckCircle, XCircle } from "lucide-react";
 
+import { getProfileImageUrl } from "@/lib/utils";
+
 export default function AdminTutorsQueue() {
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
@@ -251,7 +253,7 @@ export default function AdminTutorsQueue() {
                   <div className="h-14 w-14 rounded-full bg-green-50 border border-green-200 flex items-center justify-center font-bold text-primary text-xl overflow-hidden shrink-0">
                     {reviewTutor.photoUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={reviewTutor.photoUrl} alt={reviewTutor.name} className="h-full w-full object-cover" />
+                      <img src={getProfileImageUrl(reviewTutor.photoUrl) || undefined} alt={reviewTutor.name} className="h-full w-full object-cover" />
                     ) : (
                       reviewTutor.name.charAt(0).toUpperCase()
                     )}

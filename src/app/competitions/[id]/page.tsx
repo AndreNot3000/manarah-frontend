@@ -7,6 +7,7 @@ import { Card, Button, Badge } from "@/components/ui";
 import { ChevronLeft, Calendar, Trophy, FileText, CheckCircle2, UploadCloud } from "lucide-react";
 import Link from "next/link";
 import clsx from "clsx";
+import { getCleanFileUrl } from "@/lib/utils";
 
 export default function CompetitionDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const queryClient = useQueryClient();
@@ -321,7 +322,7 @@ export default function CompetitionDetailPage({ params }: { params: Promise<{ id
                           <FileText size={16} className="text-slate-400" />
                           {doc.fileName}
                         </span>
-                        <a href={doc.fileUrl} target="_blank" rel="noopener noreferrer" className="text-[10px] font-bold text-primary hover:underline">
+                        <a href={getCleanFileUrl(doc.fileUrl) || undefined} target="_blank" rel="noopener noreferrer" className="text-[10px] font-bold text-primary hover:underline">
                           Download
                         </a>
                       </div>

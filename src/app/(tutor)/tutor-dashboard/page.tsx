@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle, Badge, Button } from "@/compo
 import { AlertCircle, CheckCircle, Mail, Award, Clock, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
+import { getProfileImageUrl } from "@/lib/utils";
+
 export default function TutorDashboard() {
   // Fetch own tutor profile
   const { data: tutorData, isLoading: isProfileLoading } = useQuery({
@@ -87,7 +89,7 @@ export default function TutorDashboard() {
               <div className="h-16 w-16 rounded-full bg-green-50 border border-green-200 flex items-center justify-center font-bold text-primary text-xl overflow-hidden shrink-0">
                 {profile?.photoUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={profile.photoUrl} alt={profile.name} className="h-full w-full object-cover" />
+                  <img src={getProfileImageUrl(profile.photoUrl) || undefined} alt={profile.name} className="h-full w-full object-cover" />
                 ) : (
                   profile?.name.charAt(0).toUpperCase()
                 )}
