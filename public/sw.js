@@ -6,9 +6,9 @@ const ASSETS_TO_CACHE = [
   "/login",
   "/register",
   "/manifest.json",
-  "/assets/Images/icon-192.png",
-  "/assets/Images/icon-512.png",
-  "/assets/Images/icons8-google.svg",
+  "/assets/images/icon-192.png",
+  "/assets/images/icon-512.png",
+  "/assets/images/icons8-google.svg",
   OFFLINE_URL
 ];
 
@@ -66,7 +66,7 @@ self.addEventListener("fetch", (event) => {
           // Cache the fetched response for offline use
           const responseToCache = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache).catch(() => {});
+            cache.put(event.request, responseToCache).catch(() => { });
           });
 
           return response;
