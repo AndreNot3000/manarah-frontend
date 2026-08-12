@@ -45,10 +45,15 @@ self.addEventListener("fetch", (event) => {
   // Only intercept GET requests
   if (event.request.method !== "GET") return;
 
-  // Skip API requests and Chrome extensions
-  if (event.request.url.includes("/api/") || event.request.url.startsWith("chrome-extension://")) {
-    return;
-  }
+  // Only intercept requests to our own origin
+  const requestUrl = new URL(event.request.url);
+  if (requestUrl.origin !== self.location.origin) return;
+
+  // Only intercept HTTP/HTTPS schemes
+  if (!event.request.url.startsWith("http")) return;
+
+  // Skip API requests
+  if (requestUrl.pathname.includes("/api/")) return;
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
@@ -58,24 +63,24 @@ self.addEventListener("fetch", (event) => {
 
       return fetch(event.request)
         .then((response) => {
-          // Check if we received a valid response
-          if (!response || response.status !== 200 || response.type !== "basic") {
-            return response;
+          // Only cache successful basic GET responses
+          if (response && response.status === 200 && response.type === "basic") {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache).catch(() => {});
+            });
           }
-
-          // Cache the fetched response for offline use
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache).catch(() => { });
-          });
-
           return response;
         })
-        .catch(() => {
-          // If network fetch fails, show the offline page
+        .catch((err) => {
+          // Navigation request offline fallback
           if (event.request.mode === "navigate") {
-            return caches.match(OFFLINE_URL);
+            return caches.match(OFFLINE_URL).then((offlinePage) => {
+              return offlinePage || Promise.reject(err);
+            });
           }
+          // Rethrow so browser handles sub-resource failures natively
+          throw err;
         });
     })
   );

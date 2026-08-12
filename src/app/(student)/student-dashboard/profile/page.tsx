@@ -6,6 +6,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getCurrentUser, updateProfile } from "@/lib/api";
 import { Card, CardHeader, CardTitle, CardDescription, Input, Button } from "@/components/ui";
 import { Camera, CheckCircle, AlertCircle } from "lucide-react";
+import { getProfileImageUrl } from "@/lib/utils";
 import clsx from "clsx";
 
 interface ProfileFormInput {
@@ -41,7 +42,7 @@ export default function ProfilePage() {
       setValue("name", data.profile.name);
       setValue("phone", data.profile.phone || "");
       if (data.profile.avatarUrl) {
-        setAvatarPreview(data.profile.avatarUrl);
+        setAvatarPreview(getProfileImageUrl(data.profile.avatarUrl));
       }
     }
   }, [data, setValue]);

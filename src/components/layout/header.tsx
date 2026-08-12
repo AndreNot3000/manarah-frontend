@@ -43,15 +43,24 @@ export function Header() {
     localStorage.removeItem("user");
     
     // Clear cookies
-    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-    document.cookie = "user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
+    document.cookie = "user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
     
     setUser(null);
     window.dispatchEvent(new Event("storage"));
-    router.push("/login");
+    window.location.href = "/login";
   }
 
-  const dashboardUrl = user?.role === "STUDENT" ? "/student-dashboard" : "/";
+  let dashboardUrl = "/";
+  if (user) {
+    if (user.role === "ADMIN") {
+      dashboardUrl = "/admin-dashboard";
+    } else if (user.role === "TUTOR") {
+      dashboardUrl = "/tutor-dashboard";
+    } else {
+      dashboardUrl = "/student-dashboard";
+    }
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b border-neutral-border bg-white/95 backdrop-blur dark:bg-slate-950/95 dark:border-slate-800">

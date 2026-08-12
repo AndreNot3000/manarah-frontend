@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getOwnTutorProfile, updateOwnTutorProfile } from "@/lib/api";
 import { Card, CardTitle, Button, Input } from "@/components/ui";
+import { getProfileImageUrl } from "@/lib/utils";
 import { CheckCircle2, X, Plus, Upload, FileText, Trash2, Camera } from "lucide-react";
 
 interface NewQual {
@@ -59,7 +60,7 @@ export default function TutorProfileEditor() {
       setAvailability(t.availability || "");
       setSelectedSubjects(t.subjects || []);
       setExistingQuals(t.qualifications || []);
-      setPhotoPreview(t.photoUrl || null);
+      setPhotoPreview(getProfileImageUrl(t.photoUrl));
     }
   }, [data]);
 

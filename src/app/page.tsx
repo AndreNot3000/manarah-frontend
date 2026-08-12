@@ -1,6 +1,7 @@
+"use client";
+
 import {
   Badge,
-  Button,
   ButtonLink,
   Card,
   CardContent,
@@ -10,8 +11,19 @@ import {
   CardTitle,
   Input,
 } from "@/components/ui";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Home() {
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  function handleTutorSearch(e: React.FormEvent) {
+    e.preventDefault();
+    const q = searchQuery.trim();
+    router.push(q ? `/tutors?q=${encodeURIComponent(q)}` : "/tutors");
+  }
+
   return (
     <div className="space-y-section">
       {/* Hero */}
@@ -34,7 +46,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Component showcase */}
+      {/* Feature cards */}
       <section className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader>
@@ -45,10 +57,16 @@ export default function Home() {
             <CardDescription>Find tutors for Quran, Tajweed, Hifz, and more.</CardDescription>
           </CardHeader>
           <CardContent>
-            <label className="mb-1.5 block text-caption font-medium text-neutral-text dark:text-slate-300">
-              Search tutors
-            </label>
-            <Input placeholder="e.g. Tajweed, Arabic..." />
+            <form onSubmit={handleTutorSearch}>
+              <label className="mb-1.5 block text-caption font-medium text-neutral-text dark:text-slate-300">
+                Search tutors
+              </label>
+              <Input
+                placeholder="e.g. Tajweed, Arabic..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </form>
           </CardContent>
           <CardFooter>
             <ButtonLink href="/tutors">Explore Tutors</ButtonLink>
@@ -69,8 +87,8 @@ export default function Home() {
             <p>Join competitions, upload documents, and earn certificates.</p>
           </CardContent>
           <CardFooter className="gap-2">
-            <Button variant="secondary">View All</Button>
-            <Button variant="ghost">Learn More</Button>
+            <ButtonLink href="/competitions">View All</ButtonLink>
+            <ButtonLink href="/competitions" variant="ghost">Learn More</ButtonLink>
           </CardFooter>
         </Card>
       </section>

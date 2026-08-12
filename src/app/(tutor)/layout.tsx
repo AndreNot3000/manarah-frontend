@@ -12,7 +12,7 @@ import {
   MessageSquare, 
   LogOut
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getProfileImageUrl } from "@/lib/utils";
 
 const sidebarLinks = [
   { href: "/tutor-dashboard", label: "Dashboard", icon: Home },
@@ -48,10 +48,10 @@ export default function TutorLayout({ children }: { children: React.ReactNode })
   function handleLogout() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-    document.cookie = "user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
+    document.cookie = "user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
     window.dispatchEvent(new Event("storage"));
-    router.push("/login");
+    window.location.href = "/login";
   }
 
   if (isLoading && !localUser) {
@@ -106,7 +106,7 @@ export default function TutorLayout({ children }: { children: React.ReactNode })
             <div className="h-10 w-10 rounded-full bg-green-100 dark:bg-emerald-950/40 flex items-center justify-center font-bold text-primary dark:text-emerald-400 border border-green-200 dark:border-emerald-900/50 overflow-hidden">
               {(data?.profile?.avatarUrl || data?.profile?.photoUrl) ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={(data.profile.avatarUrl || data.profile.photoUrl) ?? undefined} alt="Avatar" className="h-full w-full object-cover" />
+                <img src={getProfileImageUrl(data.profile.avatarUrl || data.profile.photoUrl) ?? undefined} alt="Avatar" className="h-full w-full object-cover" />
               ) : (
                 name.charAt(0).toUpperCase()
               )}
@@ -151,7 +151,7 @@ export default function TutorLayout({ children }: { children: React.ReactNode })
             <div className="h-8 w-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center font-bold text-primary dark:text-emerald-400 border-2 border-primary-light dark:border-emerald-950 overflow-hidden">
               {(data?.profile?.avatarUrl || data?.profile?.photoUrl) ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={(data.profile.avatarUrl || data.profile.photoUrl) ?? undefined} alt="Avatar" className="h-full w-full object-cover" />
+                <img src={getProfileImageUrl(data.profile.avatarUrl || data.profile.photoUrl) ?? undefined} alt="Avatar" className="h-full w-full object-cover" />
               ) : (
                 name.charAt(0).toUpperCase()
               )}

@@ -50,10 +50,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   function handleLogout() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-    document.cookie = "user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
+    document.cookie = "user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
     window.dispatchEvent(new Event("storage"));
-    router.push("/login");
+    window.location.href = "/login";
   }
 
   if (isLoading && !localUser) {
