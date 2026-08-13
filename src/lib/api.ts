@@ -421,6 +421,27 @@ export interface AdminStats {
   registrations: number;
   pendingTutors: number;
   pendingPayments: number;
+  books: number;
+  publishedBooks: number;
+  courses: number;
+  publishedCourses: number;
+  courseEnrollments: number;
+}
+
+export type StatDetailKey =
+  | "totalUsers"
+  | "students"
+  | "tutors"
+  | "competitions"
+  | "registrations"
+  | "pendingTutors"
+  | "pendingPayments"
+  | "books"
+  | "courses"
+  | "courseEnrollments";
+
+export function getStatDetail(key: StatDetailKey): Promise<{ key: string; items: Record<string, unknown>[] }> {
+  return apiFetch(`/admin/stats/${key}`);
 }
 
 export interface AdminUserItem {
@@ -561,4 +582,236 @@ export function createAnnouncementAdmin(data: { title: string; body: string }): 
   });
 }
 
+// ─── Library API Interfaces & Methods ───────────────────────────────────────
+
+export interface ResourceCategory {
+  id: string;
+  name: string;
+  _count?: { books: number; courses: number };
+}
+
+export interface BookItem {
+  id: string;
+  title: string;
+  author: string;
+  description: string | null;
+  coverUrl: string | null;
+  fileUrl: string;
+  categoryId: string;
+  category?: ResourceCategory;
+  isPublished: boolean;
+  createdAt: string;
+}
+
+export interface CourseItem {
+  id: string;
+  title: string;
+  instructor: string;
+  description: string | null;
+  thumbnailUrl: string | null;
+  categoryId: string;
+  category?: ResourceCategory;
+  level: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+  duration: string | null;
+  isPublished: boolean;
+  createdAt: string;
+  _count?: { lessons: number; enrollments: number };
+}
+
+export interface CourseLessonItem {
+  id: string;
+  courseId: string;
+  title: string;
+  description: string | null;
+  videoUrl: string | null;
+  order: number;
+  duration: string | null;
+}
+
+export interface CourseDetail extends CourseItem {
+  lessons: CourseLessonItem[];
+}
+
+export interface CourseProgressResponse {
+  enrollment: {
+    id: string;
+    enrolledAt: string;
+    completedAt: string | null;
+  };
+  progress: {
+    totalLessons: number;
+    completedCount: number;
+    percentComplete: number;
+    completedLessonIds: string[];
+  };
+  lessons: CourseLessonItem[];
+}
+
+export interface EnrollmentListItem {
+  id: string;
+  enrolledAt: string;
+  completedAt: string | null;
+  course: CourseItem;
+  _count: { progress: number };
+}
+
+export function getLibraryCategories(): Promise<{ categories: ResourceCategory[] }> {
+  return apiFetch<{ categories: ResourceCategory[] }>("/library/categories");
+}
+
+export function getLibraryBooks(params?: { categoryId?: string; q?: string; page?: number; limit?: number }): Promise<{ books: BookItem[]; meta: { page: number; limit: number; total: number } }> {
+  const queryParts: string[] = [];
+  if (params?.categoryId) queryParts.push(`categoryId=${params.categoryId}`);
+  if (params?.q) queryParts.push(`q=${encodeURIComponent(params.q)}`);
+  if (params?.page) queryParts.push(`page=${params.page}`);
+  if (params?.limit) queryParts.push(`limit=${params.limit}`);
+  const query = queryParts.length > 0 ? `?${queryParts.join("&")}` : "";
+  return apiFetch<{ books: BookItem[]; meta: { page: number; limit: number; total: number } }>(`/library/books${query}`);
+}
+
+export function getLibraryBook(id: string): Promise<{ book: BookItem }> {
+  return apiFetch<{ book: BookItem }>(`/library/books/${id}`);
+}
+
+export function getLibraryCourses(params?: { categoryId?: string; level?: string; q?: string; page?: number; limit?: number }): Promise<{ courses: CourseItem[]; meta: { page: number; limit: number; total: number } }> {
+  const queryParts: string[] = [];
+  if (params?.categoryId) queryParts.push(`categoryId=${params.categoryId}`);
+  if (params?.level) queryParts.push(`level=${params.level}`);
+  if (params?.q) queryParts.push(`q=${encodeURIComponent(params.q)}`);
+  if (params?.page) queryParts.push(`page=${params.page}`);
+  if (params?.limit) queryParts.push(`limit=${params.limit}`);
+  const query = queryParts.length > 0 ? `?${queryParts.join("&")}` : "";
+  return apiFetch<{ courses: CourseItem[]; meta: { page: number; limit: number; total: number } }>(`/library/courses${query}`);
+}
+
+export function getLibraryCourse(id: string): Promise<{ course: CourseDetail }> {
+  return apiFetch<{ course: CourseDetail }>(`/library/courses/${id}`);
+}
+
+export function enrollCourse(courseId: string): Promise<{ enrollment: unknown; message: string }> {
+  return apiFetch<{ enrollment: unknown; message: string }>(`/library/courses/${courseId}/enroll`, {
+    method: "POST",
+  });
+}
+
+export function getCourseProgress(courseId: string): Promise<CourseProgressResponse> {
+  return apiFetch<CourseProgressResponse>(`/library/courses/${courseId}/progress`);
+}
+
+export function markLessonComplete(lessonId: string): Promise<{ message: string }> {
+  return apiFetch<{ message: string }>(`/library/lessons/${lessonId}/complete`, {
+    method: "POST",
+  });
+}
+
+export function getMyEnrollments(): Promise<{ enrollments: EnrollmentListItem[] }> {
+  return apiFetch<{ enrollments: EnrollmentListItem[] }>("/library/my-enrollments");
+}
+
+// ─── Admin Library API Methods ──────────────────────────────────────────────
+
+export function adminListCategories(): Promise<{ categories: ResourceCategory[] }> {
+  return apiFetch<{ categories: ResourceCategory[] }>("/admin/library/categories");
+}
+
+export function adminCreateCategory(data: { name: string }): Promise<{ category: ResourceCategory }> {
+  return apiFetch<{ category: ResourceCategory }>("/admin/library/categories", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+export function adminUpdateCategory(id: string, data: { name: string }): Promise<{ category: ResourceCategory }> {
+  return apiFetch<{ category: ResourceCategory }>(`/admin/library/categories/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+}
+
+export function adminDeleteCategory(id: string): Promise<{ message: string }> {
+  return apiFetch<{ message: string }>(`/admin/library/categories/${id}`, {
+    method: "DELETE",
+  });
+}
+
+export function adminListBooks(): Promise<{ books: BookItem[] }> {
+  return apiFetch<{ books: BookItem[] }>("/admin/library/books");
+}
+
+export function adminCreateBook(formData: FormData): Promise<{ book: BookItem }> {
+  return apiFetch<{ book: BookItem }>("/admin/library/books", {
+    method: "POST",
+    body: formData,
+  });
+}
+
+export function adminUpdateBook(id: string, formData: FormData): Promise<{ book: BookItem }> {
+  return apiFetch<{ book: BookItem }>(`/admin/library/books/${id}`, {
+    method: "PUT",
+    body: formData,
+  });
+}
+
+export function adminDeleteBook(id: string): Promise<{ message: string }> {
+  return apiFetch<{ message: string }>(`/admin/library/books/${id}`, {
+    method: "DELETE",
+  });
+}
+
+export function adminListCourses(): Promise<{ courses: CourseItem[] }> {
+  return apiFetch<{ courses: CourseItem[] }>("/admin/library/courses");
+}
+
+export function adminCreateCourse(formData: FormData): Promise<{ course: CourseItem }> {
+  return apiFetch<{ course: CourseItem }>("/admin/library/courses", {
+    method: "POST",
+    body: formData,
+  });
+}
+
+export function adminUpdateCourse(id: string, formData: FormData): Promise<{ course: CourseItem }> {
+  return apiFetch<{ course: CourseItem }>(`/admin/library/courses/${id}`, {
+    method: "PUT",
+    body: formData,
+  });
+}
+
+export function adminDeleteCourse(id: string): Promise<{ message: string }> {
+  return apiFetch<{ message: string }>(`/admin/library/courses/${id}`, {
+    method: "DELETE",
+  });
+}
+
+export function adminListLessons(courseId: string): Promise<{ lessons: CourseLessonItem[] }> {
+  return apiFetch<{ lessons: CourseLessonItem[] }>(`/admin/library/courses/${courseId}/lessons`);
+}
+
+export function adminCreateLesson(courseId: string, formData: FormData): Promise<{ lesson: CourseLessonItem }> {
+  return apiFetch<{ lesson: CourseLessonItem }>(`/admin/library/courses/${courseId}/lessons`, {
+    method: "POST",
+    body: formData,
+  });
+}
+
+export function adminUpdateLesson(lessonId: string, formData: FormData): Promise<{ lesson: CourseLessonItem }> {
+  return apiFetch<{ lesson: CourseLessonItem }>(`/admin/library/lessons/${lessonId}`, {
+    method: "PUT",
+    body: formData,
+  });
+}
+
+export function adminDeleteLesson(lessonId: string): Promise<{ message: string }> {
+  return apiFetch<{ message: string }>(`/admin/library/lessons/${lessonId}`, {
+    method: "DELETE",
+  });
+}
+
+export function adminReorderLessons(courseId: string, lessons: { id: string; order: number }[]): Promise<{ message: string }> {
+  return apiFetch<{ message: string }>(`/admin/library/courses/${courseId}/lessons/reorder`, {
+    method: "PATCH",
+    body: JSON.stringify({ lessons }),
+  });
+}
+
 export { API_URL };
+
