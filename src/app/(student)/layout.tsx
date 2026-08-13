@@ -13,13 +13,15 @@ import {
   Heart, 
   Award, 
   Bell, 
-  LogOut
+  LogOut,
+  BookOpen
 } from "lucide-react";
 import { cn, getProfileImageUrl } from "@/lib/utils";
 
 const sidebarLinks = [
   { href: "/student-dashboard", label: "Dashboard", icon: Home },
   { href: "/student-dashboard/profile", label: "Profile", icon: User },
+  { href: "/student-dashboard/library", label: "Books & Courses", icon: BookOpen },
   { href: "/student-dashboard/competitions", label: "My Competitions", icon: Trophy },
   { href: "/student-dashboard/saved-tutors", label: "Saved Tutors", icon: Heart },
   { href: "/student-dashboard/certificates", label: "Certificates", icon: Award },
@@ -28,8 +30,8 @@ const sidebarLinks = [
 
 const mobileNavLinks = [
   { href: "/student-dashboard", label: "Home", icon: Home },
+  { href: "/student-dashboard/library", label: "Library", icon: BookOpen },
   { href: "/student-dashboard/competitions", label: "My Competitions", icon: Trophy },
-  { href: "/student-dashboard/profile", label: "Profile", icon: User },
   { href: "/student-dashboard/notifications", label: "Alerts", icon: Bell },
 ];
 

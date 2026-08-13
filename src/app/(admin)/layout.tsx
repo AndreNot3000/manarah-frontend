@@ -11,7 +11,8 @@ import {
   UserCheck, 
   Trophy, 
   Megaphone,
-  LogOut
+  LogOut,
+  BookOpen
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -19,6 +20,7 @@ const sidebarLinks = [
   { href: "/admin-dashboard", label: "Stats Overview", icon: Home },
   { href: "/admin-dashboard/tutors", label: "Tutor Verification", icon: UserCheck },
   { href: "/admin-dashboard/competitions", label: "Competitions", icon: Trophy },
+  { href: "/admin-dashboard/library", label: "Books & Courses", icon: BookOpen },
   { href: "/admin-dashboard/announcements", label: "Broadcast Alerts", icon: Megaphone },
 ];
 
