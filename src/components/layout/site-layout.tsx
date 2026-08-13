@@ -10,11 +10,11 @@ interface SiteLayoutProps {
 
 export function SiteLayout({ children }: SiteLayoutProps) {
   const pathname = usePathname();
-  
+
   // Identify if we are inside a dashboard layout (which already provides its own sidebars/headers)
-  const isDashboard = 
-    pathname.startsWith("/student-dashboard") || 
-    pathname.startsWith("/tutor-dashboard") || 
+  const isDashboard =
+    pathname.startsWith("/student-dashboard") ||
+    pathname.startsWith("/tutor-dashboard") ||
     pathname.startsWith("/admin-dashboard");
 
   if (isDashboard) {
