@@ -18,6 +18,7 @@ import { Card, CardTitle, CardDescription, Button, Badge, Input } from "@/compon
 import { 
   Plus, Edit, Users, Trophy, Download, ChevronLeft, ChevronRight 
 } from "lucide-react";
+import { getCleanFileUrl } from "@/lib/utils";
 
 export default function AdminCompetitionsDashboard() {
   const queryClient = useQueryClient();
@@ -893,25 +894,28 @@ export default function AdminCompetitionsDashboard() {
             ) : (
               <div className="space-y-4">
                 <div className="space-y-2 max-h-[300px] overflow-y-auto border rounded-xl p-3 bg-slate-50/50">
-                  {receiptDocs.map(doc => (
-                    <div key={doc.id} className="p-3 bg-white border border-slate-100 rounded-lg flex flex-col gap-2 shadow-sm">
-                      <span className="text-xs font-bold text-slate-700 truncate block">{doc.fileName}</span>
-                      {doc.fileUrl.match(/\.(jpeg|jpg|gif|png|webp)/i) ? (
-                        <div className="relative aspect-[4/3] w-full border rounded bg-slate-100 overflow-hidden">
-                          <img src={doc.fileUrl} alt={doc.fileName} className="object-contain w-full h-full" />
-                        </div>
-                      ) : (
-                        <a
-                          href={doc.fileUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-[10px] text-blue-600 font-semibold hover:underline block"
-                        >
-                          Open document in new tab →
-                        </a>
-                      )}
-                    </div>
-                  ))}
+                  {receiptDocs.map(doc => {
+                    const cleanUrl = getCleanFileUrl(doc.fileUrl) || "";
+                    return (
+                      <div key={doc.id} className="p-3 bg-white border border-slate-100 rounded-lg flex flex-col gap-2 shadow-sm">
+                        <span className="text-xs font-bold text-slate-700 truncate block">{doc.fileName}</span>
+                        {cleanUrl.match(/\.(jpeg|jpg|gif|png|webp)/i) ? (
+                          <div className="relative aspect-[4/3] w-full border rounded bg-slate-100 overflow-hidden">
+                            <img src={cleanUrl} alt={doc.fileName} className="object-contain w-full h-full" />
+                          </div>
+                        ) : (
+                          <a
+                            href={cleanUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-[10px] text-blue-600 font-semibold hover:underline block"
+                          >
+                            Open document in new tab →
+                          </a>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
 
                 <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">

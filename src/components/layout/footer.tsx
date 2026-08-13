@@ -8,7 +8,7 @@ const footerLinks = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-neutral-border bg-neutral-background pb-20 md:pb-0 dark:bg-slate-950 dark:border-slate-800">
+    <footer className="border-t border-neutral-border bg-neutral-background dark:bg-slate-950 dark:border-slate-800">
       <div className="container-app py-8">
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div>

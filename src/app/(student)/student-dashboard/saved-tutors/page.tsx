@@ -7,6 +7,8 @@ import { Trash2, ExternalLink, Bookmark, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
+import { getProfileImageUrl } from "@/lib/utils";
+
 export default function SavedTutorsPage() {
   const queryClient = useQueryClient();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -72,7 +74,7 @@ export default function SavedTutorsPage() {
                 <div className="h-16 w-16 rounded-full bg-green-50 border border-green-200 flex items-center justify-center font-bold text-primary text-xl overflow-hidden shrink-0">
                   {saved.photoUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={saved.photoUrl} alt={saved.name} className="h-full w-full object-cover" />
+                    <img src={getProfileImageUrl(saved.photoUrl) || undefined} alt={saved.name} className="h-full w-full object-cover" />
                   ) : (
                     saved.name.charAt(0).toUpperCase()
                   )}

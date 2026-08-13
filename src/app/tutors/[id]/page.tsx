@@ -6,6 +6,7 @@ import { getTutor, getCurrentUser, getSavedTutors, saveTutor, unsaveTutor, creat
 import { Card, CardTitle, CardDescription, Button, Badge } from "@/components/ui";
 import { Heart, Send, CheckCircle2, ChevronLeft, Award, Clock, MessageSquare } from "lucide-react";
 import Link from "next/link";
+import { getProfileImageUrl } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
 export default function TutorDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -142,7 +143,7 @@ export default function TutorDetailPage({ params }: { params: Promise<{ id: stri
             <div className="h-28 w-28 rounded-full bg-green-50 border-2 border-green-200 flex items-center justify-center font-bold text-primary text-4xl overflow-hidden shadow-sm shrink-0">
               {tutor.photoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={tutor.photoUrl} alt={tutor.name} className="h-full w-full object-cover" />
+                <img src={getProfileImageUrl(tutor.photoUrl) || undefined} alt={tutor.name} className="h-full w-full object-cover" />
               ) : (
                 tutor.name.charAt(0).toUpperCase()
               )}

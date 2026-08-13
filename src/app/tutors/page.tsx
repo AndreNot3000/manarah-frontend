@@ -6,6 +6,7 @@ import { listTutors } from "@/lib/api";
 import { Card, CardTitle, CardDescription, Input, Button, Badge } from "@/components/ui";
 import { Search, ChevronLeft, ChevronRight, GraduationCap } from "lucide-react";
 import Link from "next/link";
+import { getProfileImageUrl } from "@/lib/utils";
 import clsx from "clsx";
 
 const SUBJECT_CHIPS = [
@@ -134,7 +135,7 @@ export default function TutorsDirectory() {
                   <div className="h-14 w-14 rounded-full bg-green-50 border border-green-200 flex items-center justify-center font-bold text-primary text-xl overflow-hidden shrink-0">
                     {tutor.photoUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={tutor.photoUrl} alt={tutor.name} className="h-full w-full object-cover" />
+                      <img src={getProfileImageUrl(tutor.photoUrl) || undefined} alt={tutor.name} className="h-full w-full object-cover" />
                     ) : (
                       tutor.name.charAt(0).toUpperCase()
                     )}

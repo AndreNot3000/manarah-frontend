@@ -14,6 +14,7 @@ import { IoTrophy } from "react-icons/io5";
 import { PiSealCheckFill } from "react-icons/pi";
 import { GoLightBulb } from "react-icons/go";
 import { Calendar } from "lucide-react";
+import { getProfileImageUrl } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -328,7 +329,7 @@ export default function StudentDashboard() {
                       <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-green-200 shadow-sm flex items-center justify-center bg-green-50 text-primary font-bold text-sm">
                         {mentor.photoUrl ? (
                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={mentor.photoUrl} alt={mentor.name} className="h-full w-full object-cover" />
+                          <img src={getProfileImageUrl(mentor.photoUrl) || undefined} alt={mentor.name} className="h-full w-full object-cover" />
                         ) : (
                           mentor.name.charAt(0).toUpperCase()
                         )}
