@@ -4,7 +4,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api";
 
 export async function apiFetch<T>(
   path: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
+  retries = 2
 ): Promise<T> {
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
@@ -16,53 +17,92 @@ export async function apiFetch<T>(
     headers.set("Content-Type", "application/json");
   }
 
-  const res = await fetch(`${API_URL}${path}`, {
-    ...options,
-    headers,
-  });
+  let lastError: unknown = null;
 
-  if (res.status === 401) {
-    if (typeof window !== "undefined" && path !== "/auth/login") {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
-      document.cookie = "user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
-      window.dispatchEvent(new Event("storage"));
-      window.location.href = "/login";
-    }
-    throw new Error("Unauthorized");
-  }
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(`${API_URL}${path}`, {
+        ...options,
+        headers,
+      });
 
-  const text = await res.text();
-  let result: unknown = null;
-  try {
-    result = text ? JSON.parse(text) : null;
-  } catch {
-    result = text;
-  }
-
-  if (!res.ok) {
-    let message = `HTTP Error ${res.status}`;
-    let code: string | undefined;
-
-    if (result && typeof result === "object") {
-      const resObj = result as Record<string, unknown>;
-      if (typeof resObj.error === "string") {
-        message = resObj.error;
+      if (res.status === 401) {
+        if (typeof window !== "undefined" && path !== "/auth/login") {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
+          document.cookie = "user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
+          window.dispatchEvent(new Event("storage"));
+          window.location.href = "/login";
+        }
+        throw new Error("Unauthorized");
       }
-      if (typeof resObj.code === "string") {
-        code = resObj.code;
+
+      const text = await res.text();
+      let result: unknown = null;
+      try {
+        result = text ? JSON.parse(text) : null;
+      } catch {
+        result = text;
+      }
+
+      if (!res.ok) {
+        let message = `HTTP Error ${res.status}`;
+        let code: string | undefined;
+
+        if (result && typeof result === "object") {
+          const resObj = result as Record<string, unknown>;
+          if (typeof resObj.error === "string") {
+            message = resObj.error;
+          }
+          if (typeof resObj.code === "string") {
+            code = resObj.code;
+          }
+        }
+
+        const error = new Error(message);
+        if (code) {
+          Object.assign(error, { code });
+        }
+        throw error;
+      }
+
+      return result as T;
+    } catch (err: unknown) {
+      lastError = err;
+
+      // Don't retry on client validation or authentication errors (4xx HTTP errors)
+      if (
+        err instanceof Error &&
+        (err.message === "Unauthorized" ||
+          err.message.includes("Invalid") ||
+          err.message.includes("already exists") ||
+          err.message.includes("required"))
+      ) {
+        throw err;
+      }
+
+      // If we have remaining retries and it was a network drop / cold start timeout, wait and retry
+      if (attempt < retries) {
+        await new Promise((resolve) => setTimeout(resolve, 1000 * (attempt + 1)));
+        continue;
       }
     }
-
-    const error = new Error(message);
-    if (code) {
-      Object.assign(error, { code });
-    }
-    throw error;
   }
 
-  return result as T;
+  if (lastError instanceof Error) {
+    if (
+      lastError.message === "Failed to fetch" ||
+      lastError.message === "Load failed" ||
+      lastError.message.includes("NetworkError") ||
+      lastError.message.includes("network")
+    ) {
+      throw new Error("Unable to reach the server. Please check your internet connection and try again.");
+    }
+    throw lastError;
+  }
+
+  throw new Error("Network request failed. Please try again.");
 }
 
 export interface AuthResponse {
