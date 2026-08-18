@@ -44,11 +44,23 @@ export default function AdminLibraryPage() {
   const [activeTab, setActiveTab] = useState<"categories" | "books" | "courses">("books");
 
   // Modals state
-  const [categoryModal, setCategoryModal] = useState<{ open: boolean; item?: ResourceCategory | null }>({ open: false });
-  const [bookModal, setBookModal] = useState<{ open: boolean; item?: BookItem | null }>({ open: false });
-  const [courseModal, setCourseModal] = useState<{ open: boolean; item?: CourseItem | null }>({ open: false });
-  const [lessonsModal, setLessonsModal] = useState<{ open: boolean; course?: CourseItem | null }>({ open: false });
-  const [lessonEditModal, setLessonEditModal] = useState<{ open: boolean; item?: CourseLessonItem | null }>({ open: false });
+  const [categoryModal, setCategoryModal] = useState<{
+    open: boolean;
+    item?: ResourceCategory | null;
+  }>({ open: false });
+  const [bookModal, setBookModal] = useState<{ open: boolean; item?: BookItem | null }>({
+    open: false,
+  });
+  const [courseModal, setCourseModal] = useState<{ open: boolean; item?: CourseItem | null }>({
+    open: false,
+  });
+  const [lessonsModal, setLessonsModal] = useState<{ open: boolean; course?: CourseItem | null }>({
+    open: false,
+  });
+  const [lessonEditModal, setLessonEditModal] = useState<{
+    open: boolean;
+    item?: CourseLessonItem | null;
+  }>({ open: false });
 
   // Category Form
   const [catName, setCatName] = useState("");
@@ -67,7 +79,9 @@ export default function AdminLibraryPage() {
   const [courseInstructor, setCourseInstructor] = useState("");
   const [courseDesc, setCourseDesc] = useState("");
   const [courseCatId, setCourseCatId] = useState("");
-  const [courseLevel, setCourseLevel] = useState<"BEGINNER" | "INTERMEDIATE" | "ADVANCED">("BEGINNER");
+  const [courseLevel, setCourseLevel] = useState<"BEGINNER" | "INTERMEDIATE" | "ADVANCED">(
+    "BEGINNER"
+  );
   const [courseDuration, setCourseDuration] = useState("");
   const [courseIsPublished, setCourseIsPublished] = useState(true);
   const [courseThumbFile, setCourseThumbFile] = useState<File | null>(null);
@@ -100,7 +114,8 @@ export default function AdminLibraryPage() {
 
   const { data: lessonsData } = useQuery({
     queryKey: ["admin-lessons", selectedCourse?.id],
-    queryFn: () => (selectedCourse ? adminListLessons(selectedCourse.id) : Promise.resolve({ lessons: [] })),
+    queryFn: () =>
+      selectedCourse ? adminListLessons(selectedCourse.id) : Promise.resolve({ lessons: [] }),
     enabled: !!selectedCourse,
   });
 
@@ -113,7 +128,9 @@ export default function AdminLibraryPage() {
 
   const categoryMutation = useMutation({
     mutationFn: (data: { name: string }) =>
-      categoryModal.item ? adminUpdateCategory(categoryModal.item.id, data) : adminCreateCategory(data),
+      categoryModal.item
+        ? adminUpdateCategory(categoryModal.item.id, data)
+        : adminCreateCategory(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-categories"] });
       setCategoryModal({ open: false });
@@ -146,7 +163,9 @@ export default function AdminLibraryPage() {
 
   const courseMutation = useMutation({
     mutationFn: (formData: FormData) =>
-      courseModal.item ? adminUpdateCourse(courseModal.item.id, formData) : adminCreateCourse(formData),
+      courseModal.item
+        ? adminUpdateCourse(courseModal.item.id, formData)
+        : adminCreateCourse(formData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-courses"] });
       setCourseModal({ open: false });
@@ -285,44 +304,50 @@ export default function AdminLibraryPage() {
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-6">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white flex items-center gap-3">
+      <div className="border-b border-slate-200 dark:border-slate-800 pb-6">
+        <div className="py-4">
+          <h1 className="text-[1.125rem] md:text-2xl font-black text-slate-900 dark:text-white flex items-center justify-center gap-3">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary dark:bg-emerald-950 dark:text-emerald-400">
               <BookOpen size={24} />
             </span>
             Library & Courses Management
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-sm text-center text-slate-500 dark:text-slate-400 mt-1">
             Manage Islamic books (PDFs), course video lessons, and categories.
           </p>
         </div>
 
         {/* Tab Buttons */}
-        <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-xl self-start">
+        <div className="flex items-center justify-evenly gap-2 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-xl self-start">
           <button
             onClick={() => setActiveTab("books")}
             className={`px-4 py-2 rounded-lg font-bold text-xs transition-all flex items-center gap-2 ${
-              activeTab === "books" ? "bg-white dark:bg-slate-900 text-primary shadow-sm" : "text-slate-600 dark:text-slate-400"
+              activeTab === "books"
+                ? "bg-white dark:bg-slate-900 text-primary shadow-sm"
+                : "text-slate-600 dark:text-slate-400"
             }`}
           >
-            <FileText size={14} /> Books ({books.length})
+            <FileText size={14} className="hidden md:block" /> Books ({books.length})
           </button>
           <button
             onClick={() => setActiveTab("courses")}
             className={`px-4 py-2 rounded-lg font-bold text-xs transition-all flex items-center gap-2 ${
-              activeTab === "courses" ? "bg-white dark:bg-slate-900 text-primary shadow-sm" : "text-slate-600 dark:text-slate-400"
+              activeTab === "courses"
+                ? "bg-white dark:bg-slate-900 text-primary shadow-sm"
+                : "text-slate-600 dark:text-slate-400"
             }`}
           >
-            <GraduationCap size={14} /> Courses ({courses.length})
+            <GraduationCap size={14} className="hidden md:block" /> Courses ({courses.length})
           </button>
           <button
             onClick={() => setActiveTab("categories")}
             className={`px-4 py-2 rounded-lg font-bold text-xs transition-all flex items-center gap-2 ${
-              activeTab === "categories" ? "bg-white dark:bg-slate-900 text-primary shadow-sm" : "text-slate-600 dark:text-slate-400"
+              activeTab === "categories"
+                ? "bg-white dark:bg-slate-900 text-primary shadow-sm"
+                : "text-slate-600 dark:text-slate-400"
             }`}
           >
-            <Layers size={14} /> Categories ({categories.length})
+            <Layers size={14} className="hidden md:block" /> Categories ({categories.length})
           </button>
         </div>
       </div>
@@ -332,7 +357,10 @@ export default function AdminLibraryPage() {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-bold text-slate-900 dark:text-white">Uploaded Books</h2>
-            <Button onClick={() => openBookForm()} className="gap-2 font-bold bg-primary hover:bg-green-700">
+            <Button
+              onClick={() => openBookForm()}
+              className="gap-2 font-bold bg-primary hover:bg-green-700"
+            >
               <Plus size={18} /> Add New Book
             </Button>
           </div>
@@ -363,22 +391,34 @@ export default function AdminLibraryPage() {
                           <div className="h-10 w-8 bg-slate-100 dark:bg-slate-800 rounded shrink-0 overflow-hidden border border-slate-200 dark:border-slate-700">
                             {book.coverUrl ? (
                               // eslint-disable-next-line @next/next/no-img-element
-                              <img src={book.coverUrl} alt={book.title} className="w-full h-full object-cover" />
+                              <img
+                                src={book.coverUrl}
+                                alt={book.title}
+                                className="w-full h-full object-cover"
+                              />
                             ) : (
                               <BookOpen size={16} className="m-auto text-slate-400 mt-2" />
                             )}
                           </div>
                           <span>{book.title}</span>
                         </td>
-                        <td className="p-4 text-slate-600 dark:text-slate-400 font-medium">{book.author}</td>
+                        <td className="p-4 text-slate-600 dark:text-slate-400 font-medium">
+                          {book.author}
+                        </td>
                         <td className="p-4">
-                          <Badge variant="default" className="text-xs">{book.category?.name || "General"}</Badge>
+                          <Badge variant="default" className="text-xs">
+                            {book.category?.name || "General"}
+                          </Badge>
                         </td>
                         <td className="p-4">
                           {book.isPublished ? (
-                            <Badge className="bg-emerald-500 text-white border-none text-[10px]">Published</Badge>
+                            <Badge className="bg-emerald-500 text-white border-none text-[10px]">
+                              Published
+                            </Badge>
                           ) : (
-                            <Badge variant="secondary" className="text-[10px]">Draft</Badge>
+                            <Badge variant="secondary" className="text-[10px]">
+                              Draft
+                            </Badge>
                           )}
                         </td>
                         <td className="p-4 text-right space-x-2">
@@ -408,8 +448,13 @@ export default function AdminLibraryPage() {
       {activeTab === "courses" && (
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Courses & Video Modules</h2>
-            <Button onClick={() => openCourseForm()} className="gap-2 font-bold bg-primary hover:bg-green-700">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+              Courses & Video Modules
+            </h2>
+            <Button
+              onClick={() => openCourseForm()}
+              className="gap-2 font-bold bg-primary hover:bg-green-700"
+            >
               <Plus size={18} /> Add New Course
             </Button>
           </div>
@@ -436,30 +481,45 @@ export default function AdminLibraryPage() {
                     </tr>
                   ) : (
                     courses.map((course) => (
-                      <tr key={course.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-850/50">
+                      <tr
+                        key={course.id}
+                        className="hover:bg-slate-50/50 dark:hover:bg-slate-850/50"
+                      >
                         <td className="p-4 font-bold text-slate-900 dark:text-white flex items-center gap-3">
                           <div className="h-10 w-14 bg-slate-900 rounded shrink-0 overflow-hidden border border-slate-700">
                             {course.thumbnailUrl ? (
                               // eslint-disable-next-line @next/next/no-img-element
-                              <img src={course.thumbnailUrl} alt={course.title} className="w-full h-full object-cover" />
+                              <img
+                                src={course.thumbnailUrl}
+                                alt={course.title}
+                                className="w-full h-full object-cover"
+                              />
                             ) : (
                               <GraduationCap size={18} className="m-auto text-slate-500 mt-2" />
                             )}
                           </div>
                           <span>{course.title}</span>
                         </td>
-                        <td className="p-4 text-slate-600 dark:text-slate-400 font-medium">{course.instructor}</td>
+                        <td className="p-4 text-slate-600 dark:text-slate-400 font-medium">
+                          {course.instructor}
+                        </td>
                         <td className="p-4">
-                          <Badge variant="default" className="text-xs">{course.level}</Badge>
+                          <Badge variant="default" className="text-xs">
+                            {course.level}
+                          </Badge>
                         </td>
                         <td className="p-4 font-bold text-primary dark:text-emerald-400">
                           {course._count?.lessons || 0} Lessons
                         </td>
                         <td className="p-4">
                           {course.isPublished ? (
-                            <Badge className="bg-emerald-500 text-white border-none text-[10px]">Published</Badge>
+                            <Badge className="bg-emerald-500 text-white border-none text-[10px]">
+                              Published
+                            </Badge>
                           ) : (
-                            <Badge variant="secondary" className="text-[10px]">Draft</Badge>
+                            <Badge variant="secondary" className="text-[10px]">
+                              Draft
+                            </Badge>
                           )}
                         </td>
                         <td className="p-4 text-right space-x-2">
@@ -497,7 +557,9 @@ export default function AdminLibraryPage() {
       {activeTab === "categories" && (
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Resource Categories</h2>
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+              Resource Categories
+            </h2>
             <Button
               onClick={() => {
                 setCatName("");
@@ -531,8 +593,12 @@ export default function AdminLibraryPage() {
                     categories.map((cat) => (
                       <tr key={cat.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-850/50">
                         <td className="p-4 font-bold text-slate-900 dark:text-white">{cat.name}</td>
-                        <td className="p-4 text-slate-500 font-medium">{cat._count?.books || 0} Books</td>
-                        <td className="p-4 text-slate-500 font-medium">{cat._count?.courses || 0} Courses</td>
+                        <td className="p-4 text-slate-500 font-medium">
+                          {cat._count?.books || 0} Books
+                        </td>
+                        <td className="p-4 text-slate-500 font-medium">
+                          {cat._count?.courses || 0} Courses
+                        </td>
                         <td className="p-4 text-right space-x-2">
                           <Button
                             size="sm"
@@ -571,7 +637,10 @@ export default function AdminLibraryPage() {
               <h3 className="font-bold text-lg text-slate-900 dark:text-white">
                 {categoryModal.item ? "Edit Category" : "Add New Category"}
               </h3>
-              <button onClick={() => setCategoryModal({ open: false })} className="text-slate-400 hover:text-slate-600">
+              <button
+                onClick={() => setCategoryModal({ open: false })}
+                className="text-slate-400 hover:text-slate-600"
+              >
                 <X size={20} />
               </button>
             </div>
@@ -594,10 +663,18 @@ export default function AdminLibraryPage() {
               </div>
 
               <div className="flex justify-end gap-2 pt-2">
-                <Button type="button" variant="outline" onClick={() => setCategoryModal({ open: false })}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setCategoryModal({ open: false })}
+                >
                   Cancel
                 </Button>
-                <Button type="submit" disabled={categoryMutation.isPending} className="bg-primary text-white font-bold">
+                <Button
+                  type="submit"
+                  disabled={categoryMutation.isPending}
+                  className="bg-primary text-white font-bold"
+                >
                   Save Category
                 </Button>
               </div>
@@ -614,7 +691,10 @@ export default function AdminLibraryPage() {
               <h3 className="font-bold text-lg text-slate-900 dark:text-white">
                 {bookModal.item ? "Edit Book" : "Add New Book"}
               </h3>
-              <button onClick={() => setBookModal({ open: false })} className="text-slate-400 hover:text-slate-600">
+              <button
+                onClick={() => setBookModal({ open: false })}
+                className="text-slate-400 hover:text-slate-600"
+              >
                 <X size={20} />
               </button>
             </div>
@@ -622,12 +702,22 @@ export default function AdminLibraryPage() {
             <form onSubmit={handleSaveBook} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-slate-500 mb-1">Book Title *</label>
-                <Input required value={bookTitle} onChange={(e) => setBookTitle(e.target.value)} placeholder="e.g. Sahih Al-Bukhari Summarized" />
+                <Input
+                  required
+                  value={bookTitle}
+                  onChange={(e) => setBookTitle(e.target.value)}
+                  placeholder="e.g. Sahih Al-Bukhari Summarized"
+                />
               </div>
 
               <div>
                 <label className="block text-xs font-bold text-slate-500 mb-1">Author Name *</label>
-                <Input required value={bookAuthor} onChange={(e) => setBookAuthor(e.target.value)} placeholder="e.g. Imam Al-Bukhari" />
+                <Input
+                  required
+                  value={bookAuthor}
+                  onChange={(e) => setBookAuthor(e.target.value)}
+                  placeholder="e.g. Imam Al-Bukhari"
+                />
               </div>
 
               <div>
@@ -640,13 +730,17 @@ export default function AdminLibraryPage() {
                 >
                   <option value="">Select Category</option>
                   {categories.map((c) => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-500 mb-1">Upload PDF File {!bookModal.item && "*"}</label>
+                <label className="block text-xs font-bold text-slate-500 mb-1">
+                  Upload PDF File {!bookModal.item && "*"}
+                </label>
                 <Input
                   type="file"
                   accept="application/pdf"
@@ -656,7 +750,9 @@ export default function AdminLibraryPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-500 mb-1">Cover Image (Optional)</label>
+                <label className="block text-xs font-bold text-slate-500 mb-1">
+                  Cover Image (Optional)
+                </label>
                 <Input
                   type="file"
                   accept="image/*"
@@ -665,7 +761,9 @@ export default function AdminLibraryPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-500 mb-1">Description (Optional)</label>
+                <label className="block text-xs font-bold text-slate-500 mb-1">
+                  Description (Optional)
+                </label>
                 <textarea
                   rows={3}
                   value={bookDesc}
@@ -682,16 +780,27 @@ export default function AdminLibraryPage() {
                   checked={bookIsPublished}
                   onChange={(e) => setBookIsPublished(e.target.checked)}
                 />
-                <label htmlFor="bookPublish" className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                <label
+                  htmlFor="bookPublish"
+                  className="text-xs font-bold text-slate-700 dark:text-slate-300"
+                >
                   Publish book immediately to library
                 </label>
               </div>
 
               <div className="flex justify-end gap-2 pt-3">
-                <Button type="button" variant="outline" onClick={() => setBookModal({ open: false })}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setBookModal({ open: false })}
+                >
                   Cancel
                 </Button>
-                <Button type="submit" disabled={bookMutation.isPending} className="bg-primary text-white font-bold">
+                <Button
+                  type="submit"
+                  disabled={bookMutation.isPending}
+                  className="bg-primary text-white font-bold"
+                >
                   {bookMutation.isPending ? "Uploading..." : "Save Book"}
                 </Button>
               </div>
@@ -708,20 +817,37 @@ export default function AdminLibraryPage() {
               <h3 className="font-bold text-lg text-slate-900 dark:text-white">
                 {courseModal.item ? "Edit Course" : "Add New Course"}
               </h3>
-              <button onClick={() => setCourseModal({ open: false })} className="text-slate-400 hover:text-slate-600">
+              <button
+                onClick={() => setCourseModal({ open: false })}
+                className="text-slate-400 hover:text-slate-600"
+              >
                 <X size={20} />
               </button>
             </div>
 
             <form onSubmit={handleSaveCourse} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-500 mb-1">Course Title *</label>
-                <Input required value={courseTitle} onChange={(e) => setCourseTitle(e.target.value)} placeholder="e.g. Master Tajweed Rules in 30 Days" />
+                <label className="block text-xs font-bold text-slate-500 mb-1">
+                  Course Title *
+                </label>
+                <Input
+                  required
+                  value={courseTitle}
+                  onChange={(e) => setCourseTitle(e.target.value)}
+                  placeholder="e.g. Master Tajweed Rules in 30 Days"
+                />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-500 mb-1">Instructor Name *</label>
-                <Input required value={courseInstructor} onChange={(e) => setCourseInstructor(e.target.value)} placeholder="e.g. Sheikh Abdullah" />
+                <label className="block text-xs font-bold text-slate-500 mb-1">
+                  Instructor Name *
+                </label>
+                <Input
+                  required
+                  value={courseInstructor}
+                  onChange={(e) => setCourseInstructor(e.target.value)}
+                  placeholder="e.g. Sheikh Abdullah"
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -735,16 +861,22 @@ export default function AdminLibraryPage() {
                   >
                     <option value="">Select Category</option>
                     {categories.map((c) => (
-                      <option key={c.id} value={c.id}>{c.name}</option>
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
                     ))}
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 mb-1">Difficulty Level</label>
+                  <label className="block text-xs font-bold text-slate-500 mb-1">
+                    Difficulty Level
+                  </label>
                   <select
                     value={courseLevel}
-                    onChange={(e) => setCourseLevel(e.target.value as "BEGINNER" | "INTERMEDIATE" | "ADVANCED")}
+                    onChange={(e) =>
+                      setCourseLevel(e.target.value as "BEGINNER" | "INTERMEDIATE" | "ADVANCED")
+                    }
                     className="w-full h-10 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-sm font-semibold"
                   >
                     <option value="BEGINNER">Beginner</option>
@@ -755,12 +887,20 @@ export default function AdminLibraryPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-500 mb-1">Course Duration Text (Optional)</label>
-                <Input value={courseDuration} onChange={(e) => setCourseDuration(e.target.value)} placeholder="e.g. 4 Weeks, 10 Video Lessons" />
+                <label className="block text-xs font-bold text-slate-500 mb-1">
+                  Course Duration Text (Optional)
+                </label>
+                <Input
+                  value={courseDuration}
+                  onChange={(e) => setCourseDuration(e.target.value)}
+                  placeholder="e.g. 4 Weeks, 10 Video Lessons"
+                />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-500 mb-1">Thumbnail Image (Optional)</label>
+                <label className="block text-xs font-bold text-slate-500 mb-1">
+                  Thumbnail Image (Optional)
+                </label>
                 <Input
                   type="file"
                   accept="image/*"
@@ -769,7 +909,9 @@ export default function AdminLibraryPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-500 mb-1">Course Overview & Syllabus</label>
+                <label className="block text-xs font-bold text-slate-500 mb-1">
+                  Course Overview & Syllabus
+                </label>
                 <textarea
                   rows={3}
                   value={courseDesc}
@@ -786,16 +928,27 @@ export default function AdminLibraryPage() {
                   checked={courseIsPublished}
                   onChange={(e) => setCourseIsPublished(e.target.checked)}
                 />
-                <label htmlFor="coursePublish" className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                <label
+                  htmlFor="coursePublish"
+                  className="text-xs font-bold text-slate-700 dark:text-slate-300"
+                >
                   Publish course immediately
                 </label>
               </div>
 
               <div className="flex justify-end gap-2 pt-3">
-                <Button type="button" variant="outline" onClick={() => setCourseModal({ open: false })}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setCourseModal({ open: false })}
+                >
                   Cancel
                 </Button>
-                <Button type="submit" disabled={courseMutation.isPending} className="bg-primary text-white font-bold">
+                <Button
+                  type="submit"
+                  disabled={courseMutation.isPending}
+                  className="bg-primary text-white font-bold"
+                >
                   {courseMutation.isPending ? "Uploading..." : "Save Course"}
                 </Button>
               </div>
@@ -817,7 +970,10 @@ export default function AdminLibraryPage() {
                   {selectedCourse.title}
                 </h3>
               </div>
-              <button onClick={() => setLessonsModal({ open: false })} className="text-slate-400 hover:text-slate-600">
+              <button
+                onClick={() => setLessonsModal({ open: false })}
+                className="text-slate-400 hover:text-slate-600"
+              >
                 <X size={20} />
               </button>
             </div>
@@ -825,7 +981,11 @@ export default function AdminLibraryPage() {
             {/* Header Action */}
             <div className="flex justify-between items-center shrink-0">
               <p className="text-xs text-slate-500 font-semibold">{lessons.length} Lessons Added</p>
-              <Button onClick={() => openLessonForm()} size="sm" className="gap-1.5 font-bold bg-primary hover:bg-green-700">
+              <Button
+                onClick={() => openLessonForm()}
+                size="sm"
+                className="gap-1.5 font-bold bg-primary hover:bg-green-700"
+              >
                 <Plus size={16} /> Add Lesson
               </Button>
             </div>
@@ -849,10 +1009,14 @@ export default function AdminLibraryPage() {
                           Lesson {lesson.order}
                         </Badge>
                         {lesson.duration && (
-                          <span className="text-xs text-slate-400 font-semibold">{lesson.duration}</span>
+                          <span className="text-xs text-slate-400 font-semibold">
+                            {lesson.duration}
+                          </span>
                         )}
                         {lesson.videoUrl && (
-                          <Badge className="bg-emerald-500 text-white border-none text-[9px]">Video Ready</Badge>
+                          <Badge className="bg-emerald-500 text-white border-none text-[9px]">
+                            Video Ready
+                          </Badge>
                         )}
                       </div>
                       <h4 className="font-bold text-slate-900 dark:text-white text-sm line-clamp-1 mt-1">
@@ -889,30 +1053,51 @@ export default function AdminLibraryPage() {
               <h3 className="font-bold text-base text-slate-900 dark:text-white">
                 {lessonEditModal.item ? "Edit Lesson" : "Add Lesson Module"}
               </h3>
-              <button onClick={() => setLessonEditModal({ open: false })} className="text-slate-400 hover:text-slate-600">
+              <button
+                onClick={() => setLessonEditModal({ open: false })}
+                className="text-slate-400 hover:text-slate-600"
+              >
                 <X size={20} />
               </button>
             </div>
 
             <form onSubmit={handleSaveLesson} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-500 mb-1">Lesson Title *</label>
-                <Input required value={lessonTitle} onChange={(e) => setLessonTitle(e.target.value)} placeholder="e.g. Introduction to Noon Sakinah" />
+                <label className="block text-xs font-bold text-slate-500 mb-1">
+                  Lesson Title *
+                </label>
+                <Input
+                  required
+                  value={lessonTitle}
+                  onChange={(e) => setLessonTitle(e.target.value)}
+                  placeholder="e.g. Introduction to Noon Sakinah"
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-500 mb-1">Order #</label>
-                  <Input type="number" required value={lessonOrder} onChange={(e) => setLessonOrder(Number(e.target.value))} />
+                  <Input
+                    type="number"
+                    required
+                    value={lessonOrder}
+                    onChange={(e) => setLessonOrder(Number(e.target.value))}
+                  />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-500 mb-1">Duration</label>
-                  <Input value={lessonDuration} onChange={(e) => setLessonDuration(e.target.value)} placeholder="e.g. 15 mins" />
+                  <Input
+                    value={lessonDuration}
+                    onChange={(e) => setLessonDuration(e.target.value)}
+                    placeholder="e.g. 15 mins"
+                  />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-500 mb-1">Lesson Video (Cloudinary Streaming)</label>
+                <label className="block text-xs font-bold text-slate-500 mb-1">
+                  Lesson Video (Cloudinary Streaming)
+                </label>
                 <Input
                   type="file"
                   accept="video/*"
@@ -921,7 +1106,9 @@ export default function AdminLibraryPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-500 mb-1">Lesson Notes (Optional)</label>
+                <label className="block text-xs font-bold text-slate-500 mb-1">
+                  Lesson Notes (Optional)
+                </label>
                 <textarea
                   rows={2}
                   value={lessonDesc}
@@ -932,10 +1119,18 @@ export default function AdminLibraryPage() {
               </div>
 
               <div className="flex justify-end gap-2 pt-2">
-                <Button type="button" variant="outline" onClick={() => setLessonEditModal({ open: false })}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setLessonEditModal({ open: false })}
+                >
                   Cancel
                 </Button>
-                <Button type="submit" disabled={lessonMutation.isPending} className="bg-primary text-white font-bold">
+                <Button
+                  type="submit"
+                  disabled={lessonMutation.isPending}
+                  className="bg-primary text-white font-bold"
+                >
                   {lessonMutation.isPending ? "Uploading Video..." : "Save Lesson"}
                 </Button>
               </div>

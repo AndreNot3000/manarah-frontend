@@ -42,13 +42,15 @@ export default function StudentLibraryPage() {
   // Books
   const { data: booksData, isLoading: isLoadingBooks } = useQuery({
     queryKey: ["library-books", selectedCategory, searchQuery],
-    queryFn: () => getLibraryBooks({ categoryId: selectedCategory || undefined, q: searchQuery || undefined }),
+    queryFn: () =>
+      getLibraryBooks({ categoryId: selectedCategory || undefined, q: searchQuery || undefined }),
   });
 
   // Courses
   const { data: coursesData, isLoading: isLoadingCourses } = useQuery({
     queryKey: ["library-courses", selectedCategory, searchQuery],
-    queryFn: () => getLibraryCourses({ categoryId: selectedCategory || undefined, q: searchQuery || undefined }),
+    queryFn: () =>
+      getLibraryCourses({ categoryId: selectedCategory || undefined, q: searchQuery || undefined }),
   });
 
   // My Enrollments
@@ -75,28 +77,33 @@ export default function StudentLibraryPage() {
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-slate-200 dark:border-slate-800 pb-6">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white flex items-center gap-3">
+      <div className="border-b border-slate-200 dark:border-slate-800 pb-6">
+        <div className="py-4">
+          <h1 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white flex items-center justify-center gap-3">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary dark:bg-emerald-950 dark:text-emerald-400">
               <BookOpen size={24} />
             </span>
             Islamic Library & Courses
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-sm text-center text-slate-500 dark:text-slate-400 mt-1">
             Access Islamic books, read educational PDFs, and enroll in self-paced courses.
           </p>
         </div>
 
         {/* Search Input */}
-        <div className="relative w-full md:w-80">
-          <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-          <Input
-            placeholder="Search books, courses..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 rounded-xl"
-          />
+        <div>
+          <div className="relative w-full lg:w-2/3 mx-auto">
+            <Search
+              size={18}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+            />
+            <Input
+              placeholder="Search books, courses..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 rounded-xl"
+            />
+          </div>
         </div>
       </div>
 
@@ -122,7 +129,7 @@ export default function StudentLibraryPage() {
                 : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
             }`}
           >
-            <FileText size={16} /> Books ({books.length})
+            <FileText size={16} className="hidden md:block" /> Books ({books.length})
           </button>
           <button
             onClick={() => setActiveTab("courses")}
@@ -132,7 +139,7 @@ export default function StudentLibraryPage() {
                 : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
             }`}
           >
-            <GraduationCap size={16} /> Courses ({courses.length})
+            <GraduationCap size={16} className="hidden md:block" /> Courses ({courses.length})
           </button>
         </div>
 
@@ -182,13 +189,21 @@ export default function StudentLibraryPage() {
           {isLoadingCourses ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-64 rounded-2xl bg-slate-100 dark:bg-slate-850 animate-pulse" />
+                <div
+                  key={i}
+                  className="h-64 rounded-2xl bg-slate-100 dark:bg-slate-850 animate-pulse"
+                />
               ))}
             </div>
           ) : courses.length === 0 ? (
             <Card className="p-8 text-center border-dashed">
-              <GraduationCap size={40} className="mx-auto text-slate-300 dark:text-slate-600 mb-2" />
-              <p className="text-slate-500 font-medium">No courses available in this section yet.</p>
+              <GraduationCap
+                size={40}
+                className="mx-auto text-slate-300 dark:text-slate-600 mb-2"
+              />
+              <p className="text-slate-500 font-medium">
+                No courses available in this section yet.
+              </p>
             </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -252,7 +267,10 @@ export default function StudentLibraryPage() {
                     <div className="p-5 pt-0">
                       {isEnrolled ? (
                         <Link href={`/student-dashboard/library/courses/${course.id}`}>
-                          <Button variant="outline" className="w-full justify-center gap-2 border-primary text-primary font-bold hover:bg-green-50">
+                          <Button
+                            variant="outline"
+                            className="w-full justify-center gap-2 border-primary text-primary font-bold hover:bg-green-50"
+                          >
                             <PlayCircle size={18} /> Continue Learning
                           </Button>
                         </Link>
@@ -287,7 +305,10 @@ export default function StudentLibraryPage() {
           {isLoadingBooks ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-56 rounded-2xl bg-slate-100 dark:bg-slate-850 animate-pulse" />
+                <div
+                  key={i}
+                  className="h-56 rounded-2xl bg-slate-100 dark:bg-slate-850 animate-pulse"
+                />
               ))}
             </div>
           ) : books.length === 0 ? (
@@ -307,11 +328,17 @@ export default function StudentLibraryPage() {
                     <div className="h-28 w-20 bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden shrink-0 shadow-sm border border-slate-200 dark:border-slate-700">
                       {book.coverUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={book.coverUrl} alt={book.title} className="w-full h-full object-cover" />
+                        <img
+                          src={book.coverUrl}
+                          alt={book.title}
+                          className="w-full h-full object-cover"
+                        />
                       ) : (
                         <div className="w-full h-full flex flex-col items-center justify-center p-2 text-center bg-gradient-to-br from-green-50 to-emerald-100 text-primary dark:from-emerald-950 dark:to-slate-900">
                           <BookOpen size={24} />
-                          <span className="text-[9px] font-bold mt-1 line-clamp-2">{book.title}</span>
+                          <span className="text-[9px] font-bold mt-1 line-clamp-2">
+                            {book.title}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -340,7 +367,10 @@ export default function StudentLibraryPage() {
                   {/* Download Action */}
                   <div className="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800">
                     <a href={book.fileUrl} target="_blank" rel="noopener noreferrer" download>
-                      <Button variant="outline" className="w-full justify-center gap-2 rounded-xl text-xs font-bold border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800">
+                      <Button
+                        variant="outline"
+                        className="w-full justify-center gap-2 rounded-xl text-xs font-bold border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
+                      >
                         <Download size={14} /> Download PDF
                       </Button>
                     </a>

@@ -4,9 +4,19 @@ import { useQuery } from "@tanstack/react-query";
 import { getAdminStats, getStatDetail, StatDetailKey } from "@/lib/api";
 import { Card } from "@/components/ui";
 import {
-  Users, GraduationCap, Award, Trophy, FileText,
-  AlertCircle, ShieldAlert, BookOpen, PlayCircle,
-  X, ChevronRight, UserCheck, CreditCard,
+  Users,
+  GraduationCap,
+  Award,
+  Trophy,
+  FileText,
+  AlertCircle,
+  ShieldAlert,
+  BookOpen,
+  PlayCircle,
+  X,
+  ChevronRight,
+  UserCheck,
+  CreditCard,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -47,7 +57,8 @@ function DetailPanel({
 
     const statusColor = (s: unknown) => {
       const str = String(s ?? "");
-      if (["VERIFIED", "CONFIRMED", "PUBLISHED"].some((v) => str.includes(v))) return "bg-green-100 text-green-700";
+      if (["VERIFIED", "CONFIRMED", "PUBLISHED"].some((v) => str.includes(v)))
+        return "bg-green-100 text-green-700";
       if (["PENDING"].some((v) => str.includes(v))) return "bg-amber-100 text-amber-700";
       if (["REJECTED", "CLOSED"].some((v) => str.includes(v))) return "bg-red-100 text-red-700";
       return "bg-slate-100 text-slate-600";
@@ -59,21 +70,44 @@ function DetailPanel({
       case "tutors":
       case "pendingTutors":
         return (
-          <tr key={idx} className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40">
-            <td className="py-2.5 px-4 font-semibold text-slate-800 dark:text-white text-sm">{String(item.name ?? "—")}</td>
+          <tr
+            key={idx}
+            className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40"
+          >
+            <td className="py-2.5 px-4 font-semibold text-slate-800 dark:text-white text-sm">
+              {String(item.name ?? "—")}
+            </td>
             <td className="py-2.5 px-4 text-slate-500 text-xs">{String(item.email ?? "—")}</td>
-            <td className="py-2.5 px-4">{badge(String(item.role ?? item.status ?? "—"), statusColor(item.status ?? item.role))}</td>
-            <td className="py-2.5 px-4 text-slate-400 text-xs">{item.createdAt ? new Date(String(item.createdAt)).toLocaleDateString() : "—"}</td>
+            <td className="py-2.5 px-4">
+              {badge(
+                String(item.role ?? item.status ?? "—"),
+                statusColor(item.status ?? item.role)
+              )}
+            </td>
+            <td className="py-2.5 px-4 text-slate-400 text-xs">
+              {item.createdAt ? new Date(String(item.createdAt)).toLocaleDateString() : "—"}
+            </td>
           </tr>
         );
 
       case "competitions":
         return (
-          <tr key={idx} className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40">
-            <td className="py-2.5 px-4 font-semibold text-slate-800 dark:text-white text-sm">{String(item.title ?? "—")}</td>
-            <td className="py-2.5 px-4 text-slate-500 text-xs">{String(item.type ?? "—").replace(/_/g, " ")}</td>
-            <td className="py-2.5 px-4">{badge(String(item.status ?? "—"), statusColor(item.status))}</td>
-            <td className="py-2.5 px-4 text-slate-500 text-xs font-bold">{String(item.registrations ?? 0)} participants</td>
+          <tr
+            key={idx}
+            className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40"
+          >
+            <td className="py-2.5 px-4 font-semibold text-slate-800 dark:text-white text-sm">
+              {String(item.title ?? "—")}
+            </td>
+            <td className="py-2.5 px-4 text-slate-500 text-xs">
+              {String(item.type ?? "—").replace(/_/g, " ")}
+            </td>
+            <td className="py-2.5 px-4">
+              {badge(String(item.status ?? "—"), statusColor(item.status))}
+            </td>
+            <td className="py-2.5 px-4 text-slate-500 text-xs font-bold">
+              {String(item.registrations ?? 0)} participants
+            </td>
             <td className="py-2.5 px-4 text-slate-500 text-xs">₦{String(item.fee ?? "0")}</td>
           </tr>
         );
@@ -81,48 +115,99 @@ function DetailPanel({
       case "registrations":
       case "pendingPayments":
         return (
-          <tr key={idx} className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40">
-            <td className="py-2.5 px-4 font-semibold text-slate-800 dark:text-white text-sm">{String(item.userName ?? item.studentName ?? "—")}</td>
-            <td className="py-2.5 px-4 text-slate-500 text-xs">{String(item.competitionTitle ?? item.courseTitle ?? "—")}</td>
+          <tr
+            key={idx}
+            className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40"
+          >
+            <td className="py-2.5 px-4 font-semibold text-slate-800 dark:text-white text-sm">
+              {String(item.userName ?? item.studentName ?? "—")}
+            </td>
+            <td className="py-2.5 px-4 text-slate-500 text-xs">
+              {String(item.competitionTitle ?? item.courseTitle ?? "—")}
+            </td>
             {statKey === "pendingPayments" && (
-              <td className="py-2.5 px-4 text-slate-500 text-xs font-bold">₦{String(item.fee ?? "0")}</td>
+              <td className="py-2.5 px-4 text-slate-500 text-xs font-bold">
+                ₦{String(item.fee ?? "0")}
+              </td>
             )}
             {statKey === "registrations" && (
-              <td className="py-2.5 px-4">{badge(String(item.paymentStatus ?? "—"), statusColor(item.paymentStatus))}</td>
+              <td className="py-2.5 px-4">
+                {badge(String(item.paymentStatus ?? "—"), statusColor(item.paymentStatus))}
+              </td>
             )}
-            <td className="py-2.5 px-4 text-slate-400 text-xs">{item.registeredAt ? new Date(String(item.registeredAt)).toLocaleDateString() : "—"}</td>
+            <td className="py-2.5 px-4 text-slate-400 text-xs">
+              {item.registeredAt ? new Date(String(item.registeredAt)).toLocaleDateString() : "—"}
+            </td>
           </tr>
         );
 
       case "books":
         return (
-          <tr key={idx} className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40">
-            <td className="py-2.5 px-4 font-semibold text-slate-800 dark:text-white text-sm">{String(item.title ?? "—")}</td>
+          <tr
+            key={idx}
+            className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40"
+          >
+            <td className="py-2.5 px-4 font-semibold text-slate-800 dark:text-white text-sm">
+              {String(item.title ?? "—")}
+            </td>
             <td className="py-2.5 px-4 text-slate-500 text-xs">{String(item.author ?? "—")}</td>
             <td className="py-2.5 px-4 text-slate-500 text-xs">{String(item.category ?? "—")}</td>
-            <td className="py-2.5 px-4">{badge(item.isPublished ? "Published" : "Draft", item.isPublished ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500")}</td>
+            <td className="py-2.5 px-4">
+              {badge(
+                item.isPublished ? "Published" : "Draft",
+                item.isPublished ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"
+              )}
+            </td>
           </tr>
         );
 
       case "courses":
         return (
-          <tr key={idx} className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40">
-            <td className="py-2.5 px-4 font-semibold text-slate-800 dark:text-white text-sm">{String(item.title ?? "—")}</td>
+          <tr
+            key={idx}
+            className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40"
+          >
+            <td className="py-2.5 px-4 font-semibold text-slate-800 dark:text-white text-sm">
+              {String(item.title ?? "—")}
+            </td>
             <td className="py-2.5 px-4 text-slate-500 text-xs">{String(item.instructor ?? "—")}</td>
             <td className="py-2.5 px-4 text-slate-500 text-xs">{String(item.level ?? "—")}</td>
-            <td className="py-2.5 px-4 text-slate-500 text-xs font-bold">{String(item.lessons ?? 0)} lessons</td>
-            <td className="py-2.5 px-4 text-slate-500 text-xs font-bold">{String(item.enrollments ?? 0)} enrolled</td>
-            <td className="py-2.5 px-4">{badge(item.isPublished ? "Published" : "Draft", item.isPublished ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500")}</td>
+            <td className="py-2.5 px-4 text-slate-500 text-xs font-bold">
+              {String(item.lessons ?? 0)} lessons
+            </td>
+            <td className="py-2.5 px-4 text-slate-500 text-xs font-bold">
+              {String(item.enrollments ?? 0)} enrolled
+            </td>
+            <td className="py-2.5 px-4">
+              {badge(
+                item.isPublished ? "Published" : "Draft",
+                item.isPublished ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"
+              )}
+            </td>
           </tr>
         );
 
       case "courseEnrollments":
         return (
-          <tr key={idx} className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40">
-            <td className="py-2.5 px-4 font-semibold text-slate-800 dark:text-white text-sm">{String(item.studentName ?? "—")}</td>
-            <td className="py-2.5 px-4 text-slate-500 text-xs">{String(item.courseTitle ?? "—")}</td>
-            <td className="py-2.5 px-4 text-slate-400 text-xs">{item.enrolledAt ? new Date(String(item.enrolledAt)).toLocaleDateString() : "—"}</td>
-            <td className="py-2.5 px-4">{badge(item.completedAt ? "Completed" : "In Progress", item.completedAt ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700")}</td>
+          <tr
+            key={idx}
+            className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40"
+          >
+            <td className="py-2.5 px-4 font-semibold text-slate-800 dark:text-white text-sm">
+              {String(item.studentName ?? "—")}
+            </td>
+            <td className="py-2.5 px-4 text-slate-500 text-xs">
+              {String(item.courseTitle ?? "—")}
+            </td>
+            <td className="py-2.5 px-4 text-slate-400 text-xs">
+              {item.enrolledAt ? new Date(String(item.enrolledAt)).toLocaleDateString() : "—"}
+            </td>
+            <td className="py-2.5 px-4">
+              {badge(
+                item.completedAt ? "Completed" : "In Progress",
+                item.completedAt ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"
+              )}
+            </td>
           </tr>
         );
 
@@ -133,7 +218,10 @@ function DetailPanel({
 
   function renderHeaders() {
     switch (statKey) {
-      case "totalUsers": case "students": case "tutors": case "pendingTutors":
+      case "totalUsers":
+      case "students":
+      case "tutors":
+      case "pendingTutors":
         return ["Name", "Email", "Role / Status", "Joined"];
       case "competitions":
         return ["Title", "Type", "Status", "Participants", "Fee"];
@@ -185,7 +273,10 @@ function DetailPanel({
               <thead className="sticky top-0 bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800">
                 <tr>
                   {renderHeaders().map((h) => (
-                    <th key={h} className="py-3 px-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wide">
+                    <th
+                      key={h}
+                      className="py-3 px-4 text-left text-xs font-bold text-slate-500 uppercase tracking-wide"
+                    >
                       {h}
                     </th>
                   ))}
@@ -205,7 +296,9 @@ function DetailPanel({
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
 
 export default function AdminDashboardIndex() {
-  const [activeDetail, setActiveDetail] = useState<{ key: StatDetailKey; title: string } | null>(null);
+  const [activeDetail, setActiveDetail] = useState<{ key: StatDetailKey; title: string } | null>(
+    null
+  );
 
   const { data: statsData, isLoading } = useQuery({
     queryKey: ["adminStats"],
@@ -325,14 +418,17 @@ export default function AdminDashboardIndex() {
       {/* Action alert */}
       {(statsData?.pendingTutors ?? 0) > 0 && (
         <button
-          onClick={() => setActiveDetail({ key: "pendingTutors", title: "Pending Tutor Applications" })}
+          onClick={() =>
+            setActiveDetail({ key: "pendingTutors", title: "Pending Tutor Applications" })
+          }
           className="w-full text-left bg-red-50 border border-red-200 text-red-950 p-5 rounded-2xl flex items-start gap-4 shadow-sm hover:bg-red-100 transition-colors"
         >
           <ShieldAlert className="text-red-600 shrink-0 mt-0.5" size={20} />
           <div className="space-y-1 flex-1">
             <h4 className="text-sm font-bold">Action Required: Pending Tutor Applications</h4>
             <p className="text-xs text-red-800 leading-relaxed">
-              There are <span className="font-bold">{statsData?.pendingTutors}</span> tutors currently awaiting verification. Click here to review them.
+              There are <span className="font-bold">{statsData?.pendingTutors}</span> tutors
+              currently awaiting verification. Click here to review them.
             </p>
           </div>
           <ChevronRight size={18} className="text-red-400 shrink-0 mt-0.5" />
@@ -340,7 +436,7 @@ export default function AdminDashboardIndex() {
       )}
 
       {/* Stat cards grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {cards.map((c) => {
           const Icon = c.icon;
           const isActive = activeDetail?.key === c.key;
@@ -349,9 +445,10 @@ export default function AdminDashboardIndex() {
               key={c.key}
               onClick={() => setActiveDetail(isActive ? null : { key: c.key, title: c.title })}
               className={`text-left w-full rounded-2xl border p-5 flex items-center justify-between transition-all duration-150
-                ${isActive
-                  ? "ring-2 ring-primary shadow-md bg-primary/5 border-primary/30"
-                  : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:shadow-md hover:border-primary/30"
+                ${
+                  isActive
+                    ? "ring-2 ring-primary shadow-md bg-primary/5 border-primary/30"
+                    : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:shadow-md hover:border-primary/30"
                 }
               `}
             >
@@ -359,14 +456,14 @@ export default function AdminDashboardIndex() {
                 <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
                   {c.title}
                 </span>
-                <span className="text-3xl font-black text-slate-800 dark:text-white leading-none">
+                <span className="mt-1 *:text-3xl font-black text-slate-800 dark:text-white leading-none">
                   {c.value.toLocaleString()}
                 </span>
                 <p className="text-xs text-slate-500 leading-relaxed">{c.desc}</p>
               </div>
-              <div className="flex flex-col items-end gap-2">
-                <span className={`p-3 rounded-2xl border shrink-0 ${c.color}`}>
-                  <Icon size={22} />
+              <div className="flex flex-col items-center gap-2">
+                <span className={`p-1 rounded-2xl border shrink-0 ${c.color}`}>
+                  <Icon size={16} />
                 </span>
                 <span className="text-[10px] font-semibold text-primary flex items-center gap-0.5">
                   View <ChevronRight size={10} />
