@@ -731,8 +731,8 @@ export default function AdminLibraryPage() {
 
       {/* ─── MODAL: BOOK ────────────────────────────────────────────────────── */}
       {bookModal.open && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <Card className="w-full max-w-lg p-6 space-y-4 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-start sm:items-center justify-center p-4 pt-16 sm:pt-4 overflow-y-auto">
+          <Card className="w-full max-w-lg p-6 space-y-4 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 mb-24 sm:mb-0">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <h3 className="font-bold text-lg text-slate-900 dark:text-white">
                 {bookModal.item ? "Edit Book" : "Add New Book"}
@@ -822,8 +822,8 @@ export default function AdminLibraryPage() {
 
       {/* ─── MODAL: COURSE ──────────────────────────────────────────────────── */}
       {courseModal.open && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <Card className="w-full max-w-lg p-6 space-y-4 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-start sm:items-center justify-center p-4 pt-16 sm:pt-4 overflow-y-auto">
+          <Card className="w-full max-w-lg p-6 space-y-4 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 mb-24 sm:mb-0">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <h3 className="font-bold text-lg text-slate-900 dark:text-white">
                 {courseModal.item ? "Edit Course" : "Add New Course"}
@@ -955,8 +955,8 @@ export default function AdminLibraryPage() {
 
       {/* ─── MODAL: ADD/EDIT LESSON ──────────────────────────────────────────── */}
       {lessonEditModal.open && (
-        <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <Card className="w-full max-w-md p-6 space-y-4 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+        <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-start sm:items-center justify-center p-4 pt-16 sm:pt-4 overflow-y-auto">
+          <Card className="w-full max-w-md p-6 space-y-4 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 mb-24 sm:mb-0">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <h3 className="font-bold text-base text-slate-900 dark:text-white">
                 {lessonEditModal.item ? "Edit Lesson" : "Add Lesson Module"}
