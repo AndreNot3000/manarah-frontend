@@ -1,0 +1,46 @@
+{
+  "name": "manarah-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "@base-ui/react": "^1.6.0",
+    "@hookform/resolvers": "^5.4.0",
+    "@react-icons/all-files": "^4.1.0",
+    "@tanstack/react-query": "^5.101.2",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide": "^1.22.0",
+    "lucide-react": "^1.23.0",
+    "next": "^15.1.3",
+    "next-themes": "^0.4.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.80.0",
+    "react-icons": "^5.7.0",
+    "shadcn": "^4.13.0",
+    "tailwind-merge": "^3.6.0",
+    "tw-animate-css": "^1.4.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.2.0",
+    "@types/node": "^22.10.5",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "eslint": "^9.17.0",
+    "eslint-config-next": "^15.1.3",
+    "eslint-config-prettier": "^9.1.0",
+    "postcss": "^8.4.49",
+    "prettier": "^3.4.2",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.3"
+  }
+}
