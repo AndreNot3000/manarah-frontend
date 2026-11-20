@@ -1,0 +1,12 @@
+// Written by Bearilly Buildgram (full codebase swap). A public page of the school's website, kept as designed at /student-dashboard/library/courses/[id].
+import '../../../../../school-site/src/app/globals.css';
+import SchoolChrome from '../../../../../school-site/src/app/layout';
+import SchoolPage from '../../../../../school-site/src/app/(student)/student-dashboard/library/courses/[id]/page';
+
+export default function SchoolSitePage(props) {
+  return (
+    <SchoolChrome>
+      <SchoolPage {...props} />
+    </SchoolChrome>
+  );
+}

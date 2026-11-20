@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: #0e7a3e;
+    --color-secondary: #c8a542;
+    --color-text: #333333;
+    --color-muted: #6b7280;
+    --color-border: #e5e7eb;
+    --color-background: #f9fafb;
+  }
+
+  .dark {
+    --color-text: #f8fafc;
+    --color-muted: #94a3b8;
+    --color-border: #1e293b;
+    --color-background: #090d16;
+  }
+
+  .dark body {
+    background-color: #0b0f17;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.08) 0px, transparent 55%),
+      radial-gradient(at 100% 0%, rgba(200, 165, 66, 0.05) 0px, transparent 55%),
+      radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.03) 0px, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  .dark .text-slate-900 { color: #f8fafc !important; }
+  .dark .text-slate-800 { color: #f1f5f9 !important; }
+  .dark .text-slate-700 { color: #e2e8f0 !important; }
+  .dark .text-slate-650 { color: #cbd5e1 !important; }
+  .dark .text-slate-600 { color: #cbd5e1 !important; }
+  .dark .text-slate-500 { color: #94a3b8 !important; }
+
+  .dark .bg-white { background-color: #0f172a !important; }
+  .dark .bg-slate-50 { background-color: #0b0f17 !important; }
+  .dark .border-slate-100 { border-color: #1e293b !important; }
+  .dark .border-slate-200 { border-color: #1e293b !important; }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-white font-sans text-neutral-text dark:text-slate-200 antialiased transition-colors duration-200;
+  }
+
+  h1 {
+    @apply text-display text-neutral-text;
+  }
+
+  h2 {
+    @apply text-title text-neutral-text;
+  }
+
+  p {
+    @apply text-body text-neutral-muted;
+  }
+}
+
+@layer components {
+  .container-app {
+    @apply container mx-auto max-w-6xl px-4;
+  }
+}

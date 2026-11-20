@@ -7,15 +7,24 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (typeof window !== "undefined" && "serviceWorker" in navigator) {
       if (process.env.NODE_ENV === "production") {
-        // Register service worker in production
-        navigator.serviceWorker
-          .register("/sw.js")
-          .then((registration) => {
-            console.log("MANARAH PWA Service Worker registered with scope:", registration.scope);
-          })
-          .catch((error) => {
-            console.error("MANARAH PWA Service Worker registration failed:", error);
+        // First: unregister all existing service workers (kills old stale caches)
+        navigator.serviceWorker.getRegistrations().then((registrations) => {
+          const unregisterAll = registrations.map((r) => r.unregister());
+          Promise.all(unregisterAll).then(() => {
+            // Also clear all caches manually as extra safety net
+            if ("caches" in window) {
+              caches.keys().then((cacheNames) => {
+                cacheNames.forEach((name) => caches.delete(name));
+              });
+            }
+            // Register the new self-destruct SW so it wipes any remaining caches
+            navigator.serviceWorker
+              .register("/sw.js")
+              .catch((error) => {
+                console.error("MANARAH PWA Service Worker registration failed:", error);
+              });
           });
+        });
       } else {
         // Unregister in development to prevent stale caches & Turbopack HMR conflicts
         navigator.serviceWorker.getRegistrations().then((registrations) => {
